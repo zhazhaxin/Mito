@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by llxal on 2015/12/19.
  */
-public class ListAdapter<T> extends BaseAdapter {
+public abstract class ListAdapter<T> extends BaseAdapter {
 
     private List<T> data;
     private Context mContext;
@@ -40,7 +40,9 @@ public class ListAdapter<T> extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        return ViewHolder.getViewHlder(mContext,convertView, layoutId).getConvertView();
+        View item = ViewHolder.getViewHlder(mContext,convertView, layoutId).getConvertView();
+        initView(item);
+        return item;
     }
 
     public void add(T object){
@@ -77,5 +79,7 @@ public class ListAdapter<T> extends BaseAdapter {
         data.remove(position);
         notifyDataSetChanged();
     }
+
+    public abstract void initView(View view);
 
 }
