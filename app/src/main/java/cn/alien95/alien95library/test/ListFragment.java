@@ -1,4 +1,4 @@
-package cn.alien95.alien95library;
+package cn.alien95.alien95library.test;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -14,6 +14,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.alien95.alien95library.R;
 import cn.alien95.alien95library.bean.User;
 import cn.alien95.set.listview.ListAdapter;
 import cn.alien95.set.listview.ViewHolder;

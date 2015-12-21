@@ -1,9 +1,10 @@
-package cn.alien95.alien95library;
+package cn.alien95.alien95library.test;
 
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
+import cn.alien95.alien95library.R;
 import cn.alien95.set.viewpager.BaseFragmentPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
@@ -19,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         pagerAdapter = new BaseFragmentPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
 
-        pagerAdapter.add(new cn.alien95.alien95library.ListFragment());
+        pagerAdapter.add(new ListFragment());
         pagerAdapter.add(new RecyclerFragment());
 
 
