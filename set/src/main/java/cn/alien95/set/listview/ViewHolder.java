@@ -10,38 +10,34 @@ import android.view.View;
  */
 public class ViewHolder {
 
-    private int layoutId;
-    private Context mContext;
     private static View mConvertView;
     private SparseArray<View> cache;
 
-    public ViewHolder(Context context, int layoutId){
+    public ViewHolder(Context context, int layoutId) {
         cache = new SparseArray<>();
-        mContext = context;
-        this.layoutId = layoutId;
-        mConvertView = LayoutInflater.from(context).inflate(layoutId,null);
+        mConvertView = LayoutInflater.from(context).inflate(layoutId, null);
         mConvertView.setTag(this);
     }
 
-    public static ViewHolder getViewHlder(Context context, View convertView, int layoutId){
-        if(convertView == null){
-            return new ViewHolder(context,layoutId);
-        }else {
+    public static ViewHolder getViewHlder(Context context, View convertView, int layoutId) {
+        if (convertView == null) {
+            return new ViewHolder(context, layoutId);
+        } else {
             mConvertView = convertView;  //必须加上这句话，不然item显示有bug
             return (ViewHolder) convertView.getTag();
         }
     }
 
-    public View getViewById(int id){
+    public View getViewById(int id) {
         View view = cache.get(id);
-        if(view == null){
+        if (view == null) {
             view = mConvertView.findViewById(id);
-            cache.put(id,view);
+            cache.put(id, view);
         }
         return view;
     }
 
-    public View getConvertView(){
+    public View getConvertView() {
         return mConvertView;
     }
 }

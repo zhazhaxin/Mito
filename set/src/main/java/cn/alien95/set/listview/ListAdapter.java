@@ -29,7 +29,7 @@ public abstract class ListAdapter<T> extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public T getItem(int position) {
         return data.get(position);
     }
 
@@ -40,8 +40,9 @@ public abstract class ListAdapter<T> extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View item = ViewHolder.getViewHlder(mContext,convertView, layoutId).getConvertView();
-        initView(item);
+        ViewHolder viewHolder = ViewHolder.getViewHlder(mContext, convertView, layoutId);
+        View item = viewHolder.getConvertView();
+        initView(viewHolder,getItem(position));
         return item;
     }
 
@@ -80,6 +81,6 @@ public abstract class ListAdapter<T> extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public abstract void initView(View view);
+    public abstract void initView(ViewHolder viewHolder,T object);
 
 }
