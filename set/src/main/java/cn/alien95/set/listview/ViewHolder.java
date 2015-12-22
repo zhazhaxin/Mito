@@ -1,6 +1,7 @@
 package cn.alien95.set.listview;
 
 import android.content.Context;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.view.View;
  */
 public class ViewHolder {
 
+    private final String TAG = "listview-viewholder";
     private static View mConvertView;
     private SparseArray<View> cache;
 
@@ -34,10 +36,12 @@ public class ViewHolder {
             view = mConvertView.findViewById(id);
             cache.put(id, view);
         }
+
         return view;
     }
 
     public View getConvertView() {
+        Log.i(TAG,"item-is-clickabe:" + mConvertView.isClickable());
         return mConvertView;
     }
 }
