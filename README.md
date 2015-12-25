@@ -1,17 +1,21 @@
-# Alien_Library
-关于listview，recyclerview,viewpager&fragment的封装
-ListView:
-使用时Adapter继承ListAdapter,自定义ViewHolder继承ViewHolder类
-在自定义的adapter中实现initView(ViewHolder holder,T object)方法
-通过holder.getViewById(int id)来实例化item中的view，同时可以绑定数据
 
-adapter可以通过add()等方法动态添加数据。
 
-RecyclerView:
-自定义的Adapter继承RecyclerAdapter
-自定义的ViewHolder继承BaseViewHolder
-在自定义的ViewHolder中去实例化item中的view，通过重写setData()方法来绑定数据
+###2015届学员寒假作业
+时间过得真快，一学期就这样过去了。
+1，复习。
+之前学过的Android的所有控件:View,TextView,ImageView,EditText,
+ListView,RecyclerView,Fragment,ViewPager，其中有很多小的知识点，大家寒假认真复习，多写多练。
+2，新任务：数据库：sqlite，网络请求：http
+上面我都写好了示例代码提供给大家参考，我代码写的很渣，我相信你们中间肯定有人比我厉害，加油吧。代码仅提供参考，不是抄袭！！！
 
-ViewPager$&Fragment
-在使用ViewPager&Fragment的时候，自定义的Adapter继承BaseFragmentPagerAdapter
-通过add()等方法来添加Fragment
+作业：
+level-one（渣渣）：高仿QQ主页面：图
+level-two（普通）：写一个本地备忘录，有增删改查功能，列表展示，点击查看详情，数据字段至少包括：id，title，content，time。
+level-three（中级）：
+
+
+作业要求：在本地新建一个项目：HomeWork，代码同步到github，在github的README.md文件写好你做的作业所有细节。比如：http请求网络数据如何实现的，原理是什么，核心代码贴上去。
+
+寒假回家有网的同学应该是时候去写几篇博客了，把学到的东西写到博客上，也同时可以帮助你复习前面的内容，加深印象，在README.md上面附上链接地址，会加分哟。
+
+如果发现代码和我相似度大于60%，视为寒假回家打酱油了，回来直接踢人。
