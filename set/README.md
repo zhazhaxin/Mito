@@ -1,5 +1,5 @@
 # Alien_Library
-关于ListView，RecyclerView,ViewPager&Fragment的封装
+###1,关于ListView，RecyclerView,ViewPager&Fragment的封装
 ListView:
 使用时Adapter继承ListAdapter,自定义ViewHolder继承ViewHolder类
 在自定义的adapter中实现initView(ViewHolder holder,T object)方法
@@ -15,3 +15,6 @@ RecyclerView:
 ViewPager$&Fragment
 在使用ViewPager&Fragment的时候，自定义的Adapter继承BaseFragmentPagerAdapter
 通过add()等方法来添加Fragment
+
+###2,网络请求库
+使用
