@@ -3,11 +3,11 @@ package cn.alien95.set.http;
 /**
  * Created by linlongxin on 2015/12/26.
  */
-public interface HttpCallBack {
+public abstract class HttpCallBack {
 
-    void error();
+    public void error(){}
 
-    void success(String info);
+    public abstract void success(String info);
 
-    void failure(int status, String info);
+    public void failure(int status, String info){}
 }

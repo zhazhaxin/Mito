@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +18,8 @@ import java.util.List;
 
 import cn.alien95.alien95library.R;
 import cn.alien95.alien95library.bean.User;
+import cn.alien95.set.http.HttpCallBack;
+import cn.alien95.set.http.request.HttpRequest;
 import cn.alien95.set.recyclerview.BaseViewHolder;
 import cn.alien95.set.recyclerview.RecyclerAdapter;
 
@@ -45,7 +47,7 @@ public class RecyclerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_recycler,null);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         return view;
@@ -74,15 +76,20 @@ public class RecyclerFragment extends Fragment {
             super(context, layoutId);
 
             name = (TextView) itemView.findViewById(R.id.name);
-            face = (ImageView) itemView.findViewById(R.id.face);
+//            face = (ImageView) itemView.findViewById(R.id.face);
         }
 
         @Override
         public void setData(User object) {
             super.setData(object);
-            name.setText(object.getName());
-            face.setImageResource(object.getFace());
-            itemView.setClickable(true);
+            HttpRequest.getInstance("http://www.baidu.com")
+                    .get(new HttpCallBack() {
+                        @Override
+                        public void success(String info) {
+                            name.setText(info);
+                        }
+                    });
+
         }
     }
 

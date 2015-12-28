@@ -7,7 +7,12 @@ import cn.alien95.set.http.HttpCallBack;
 /**
  * Created by linlongxin on 2015/12/26.
  */
-public interface ImageCallBack extends HttpCallBack{
+public abstract class ImageCallBack extends HttpCallBack{
 
-    void success(Bitmap bitmap);
+    public abstract void success(Bitmap bitmap);
+
+    @Override
+    public void success(String info) {
+
+    }
 }

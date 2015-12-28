@@ -28,12 +28,12 @@ public class HttpQueue {
         return instance;
     }
 
-    public synchronized void add(Runnable runnable){
+    public void addQuest(Runnable runnable){
         requestQueue.push(runnable);
         start();
     }
 
-    private void start(){
+    private synchronized void start(){
         while (requestQueue.peek() != null){
             threadPool.execute(requestQueue.poll());
         }

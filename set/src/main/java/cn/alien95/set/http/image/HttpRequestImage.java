@@ -17,6 +17,6 @@ public class HttpRequestImage {
     }
 
     public void requestImage(String url,ImageCallBack callBack) throws IOException {
-        new HttpRequest(url).imageLoader(callBack);
+        HttpRequest.getInstance(url).imageLoader(callBack);
     }
 }
