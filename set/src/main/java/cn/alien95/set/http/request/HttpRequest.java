@@ -2,7 +2,7 @@ package cn.alien95.set.http.request;
 
 import java.util.HashMap;
 
-import cn.alien95.set.http.DebugUtils;
+import cn.alien95.set.http.util.DebugUtils;
 import cn.alien95.set.http.Http;
 import cn.alien95.set.http.HttpCallBack;
 import cn.alien95.set.http.HttpConnection;
@@ -18,10 +18,7 @@ public class HttpRequest implements Http {
 
     private static HttpRequest instance;
 
-    private boolean isDebug = false;
-
     private HttpRequest(){
-
     }
 
     public static HttpRequest getInstance(String url){
@@ -45,7 +42,7 @@ public class HttpRequest implements Http {
         HttpQueue.getInstance().addQuest(new Runnable() {
             @Override
             public void run() {
-                httpConnection.quest(HttpConnection.RequestType.GET, null, false, callBack);
+                httpConnection.quest(HttpConnection.RequestType.GET, null, callBack);
             }
         });
 
@@ -56,7 +53,7 @@ public class HttpRequest implements Http {
         HttpQueue.getInstance().addQuest(new Runnable() {
             @Override
             public void run() {
-                httpConnection.quest(HttpConnection.RequestType.POST, params, false, callBack);
+                httpConnection.quest(HttpConnection.RequestType.POST, params, callBack);
             }
         });
     }
@@ -66,7 +63,7 @@ public class HttpRequest implements Http {
         HttpQueue.getInstance().addQuest(new Runnable() {
             @Override
             public void run() {
-                httpConnection.quest(HttpConnection.RequestType.GET, null, true, callBack);
+                httpConnection.quest(HttpConnection.RequestType.GET, null, callBack);
             }
         });
     }

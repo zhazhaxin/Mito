@@ -5,7 +5,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
 import cn.alien95.alien95library.R;
-import cn.alien95.set.http.DebugUtils;
 import cn.alien95.set.viewpager.BaseFragmentPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
@@ -16,8 +15,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        DebugUtils.initialize("NetWork");
 
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         pagerAdapter = new BaseFragmentPagerAdapter(getSupportFragmentManager());

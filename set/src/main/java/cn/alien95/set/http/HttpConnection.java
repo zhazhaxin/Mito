@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.alien95.set.http.image.ImageCallBack;
+import cn.alien95.set.http.util.DebugUtils;
 
 /**
  * Created by linlongxin on 2015/12/26.
@@ -51,11 +52,10 @@ public class HttpConnection {
      *
      * @param type     请求方式{POST,GET}
      * @param param    请求的参数，HashMap键值对的形式
-     * @param isImage  请求是否是图片加载
      * @param callback 请求返回的回调
      */
 
-    public synchronized void quest(RequestType type, HashMap<String, String> param, boolean isImage, final HttpCallBack callback) {
+    public synchronized void quest(RequestType type, HashMap<String, String> param, final HttpCallBack callback) {
 
         int respondCode;
         try {
@@ -104,20 +104,13 @@ public class HttpConnection {
                 });
                 return;
             } else {
-                //图片加载
-                if (isImage) {
-                    readBitmap(in, (ImageCallBack) callback);
-                    DebugUtils.responseLog("图片");
-                    return;
-                }
-
                 final String result = readInputStream(in);
                 in.close();
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
                         callback.success(result);
-                        DebugUtils.responseLog(result);
+                        DebugUtils.responseLog(DebugUtils.requestTimes,result);
                     }
                 });
             }
