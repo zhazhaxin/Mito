@@ -1,15 +1,25 @@
 package cn.alien95.set.http.image;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
 
+import java.io.File;
 import java.io.InputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by linlongxin on 2015/12/29.
  */
 public class ImageUtils {
 
+    private static Context mContext;
+
+    public static void init(Context context){
+        mContext = context;
+    }
 
     /** 为图片压缩做准备，通过设置inSampleSize参数来压缩
      * 通过reqWidth和reqHeight来计算出合理的inSampleSize
@@ -55,4 +65,50 @@ public class ImageUtils {
         options.inJustDecodeBounds = false;  //设置了inSampleSize后压缩图片，重新分配内存
         return BitmapFactory.decodeStream(inputStream, null, options);
     }
+
+    /**
+     * 获取图片硬盘缓存路径
+     * @param uniqueName
+     * @return
+     */
+    public static File getDiskCacheDir(String uniqueName) {
+        String cachePath;
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
+                || !Environment.isExternalStorageRemovable()) {
+            cachePath = mContext.getExternalCacheDir().getPath();
+        } else {
+            cachePath = mContext.getCacheDir().getPath();
+        }
+        return new File(cachePath + File.separator + uniqueName);
+    }
+
+    /**
+     *
+     * @param key  传入加密的字符串
+     * @return  返回MD5加密后的字符串
+     */
+    public static String MD5(String key) {
+        String cacheKey;
+        try {
+            final MessageDigest mDigest = MessageDigest.getInstance("MD5");
+            mDigest.update(key.getBytes());
+            cacheKey = bytesToHexString(mDigest.digest());
+        } catch (NoSuchAlgorithmException e) {
+            cacheKey = String.valueOf(key.hashCode());
+        }
+        return cacheKey;
+    }
+
+    private static String bytesToHexString(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < bytes.length; i++) {
+            String hex = Integer.toHexString(0xFF & bytes[i]);
+            if (hex.length() == 1) {
+                sb.append('0');
+            }
+            sb.append(hex);
+        }
+        return sb.toString();
+    }
+
 }

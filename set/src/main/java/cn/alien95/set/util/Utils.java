@@ -65,7 +65,7 @@ public class Utils {
      * 获取版本号
      * @return
      */
-    public static int getVersion(){
+    public static int getAppVersion(){
         PackageManager manager = mContext.getPackageManager();
         PackageInfo info = null;
         try {

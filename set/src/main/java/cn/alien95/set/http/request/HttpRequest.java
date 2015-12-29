@@ -1,6 +1,6 @@
 package cn.alien95.set.http.request;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import cn.alien95.set.http.Http;
 import cn.alien95.set.http.HttpCallBack;
@@ -47,7 +47,7 @@ public class HttpRequest implements Http {
     }
 
     @Override
-    public void post(final HashMap<String, String> params, final HttpCallBack callBack) {
+    public void post(final Map<String, String> params, final HttpCallBack callBack) {
         HttpQueue.getInstance().addQuest(new Runnable() {
             @Override
             public void run() {

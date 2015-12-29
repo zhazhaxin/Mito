@@ -1,6 +1,7 @@
 package cn.alien95.alien95library.test;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,15 +12,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
+
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.alien95.alien95library.R;
-import cn.alien95.alien95library.bean.User;
+import cn.alien95.alien95library.bean.Image;
+import cn.alien95.alien95library.bean.ImageRespond;
+import cn.alien95.alien95library.model.ImageModel;
 import cn.alien95.set.http.HttpCallBack;
-import cn.alien95.set.http.request.HttpRequest;
+import cn.alien95.set.http.image.HttpRequestImage;
+import cn.alien95.set.http.image.ImageCallBack;
 import cn.alien95.set.recyclerview.BaseViewHolder;
 import cn.alien95.set.recyclerview.RecyclerAdapter;
 
@@ -28,18 +33,23 @@ import cn.alien95.set.recyclerview.RecyclerAdapter;
  */
 public class RecyclerFragment extends Fragment {
 
-    private List<User> users;
+    private List<Image> images;
     private RecyclerView recyclerView;
-    private RecyclerAdapter<User> adapter;
+    private RecyclerAdapter<Image> adapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        users = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            users.add(new User(R.mipmap.ic_launcher, "android"));
-        }
-        adapter = new MyAdapter(users);
+        images = new ArrayList<>();
+        adapter = new MyAdapter(images);
+        ImageModel.getImageForNet(1, new HttpCallBack() {
+            @Override
+            public void success(String info) {
+                Gson gson = new Gson();
+                ImageRespond respond = gson.fromJson(info,ImageRespond.class);
+                adapter.addAll(respond.getTngou());
+            }
+        });
     }
 
     @Nullable
@@ -54,41 +64,43 @@ public class RecyclerFragment extends Fragment {
 
     }
 
-    class MyAdapter extends RecyclerAdapter<User>{
+    class MyAdapter extends RecyclerAdapter<Image>{
 
-        public MyAdapter(List<User> data) {
+        public MyAdapter(List<Image> data) {
             super(data);
         }
 
         @Override
-        public BaseViewHolder<User> onCreateViewHolder(ViewGroup parent, int viewType) {
+        public BaseViewHolder<Image> onCreateViewHolder(ViewGroup parent, int viewType) {
             return new MyViewHolder(getActivity(),R.layout.item_list);
         }
     }
 
 
-    class MyViewHolder extends BaseViewHolder<User>{
+    class MyViewHolder extends BaseViewHolder<Image>{
 
-        private TextView name;
-        private ImageView face;
+        private ImageView image;
 
         public MyViewHolder(Context context, int layoutId) {
             super(context, layoutId);
-
-            name = (TextView) itemView.findViewById(R.id.name);
-//            face = (ImageView) itemView.findViewById(R.id.face);
+            image = (ImageView) itemView.findViewById(R.id.image);
         }
 
         @Override
-        public void setData(User object) {
+        public void setData(Image object) {
             super.setData(object);
-            HttpRequest.getInstance("http://www.baidu.com")
-                    .get(new HttpCallBack() {
-                        @Override
-                        public void success(String info) {
-                            name.setText(info);
-                        }
-                    });
+            HttpRequestImage.getInstance().requestImage(object.getImg(), new ImageCallBack() {
+                @Override
+                public void success(Bitmap bitmap) {
+                    if(bitmap != null)
+                    image.setImageBitmap(bitmap);
+                }
+
+                @Override
+                public void failure() {
+
+                }
+            });
 
         }
     }

@@ -21,10 +21,12 @@ import cn.alien95.set.http.util.DebugUtils;
  */
 public class HttpConnection {
 
+    private HttpURLConnection urlConnection;
     private Handler handler = new Handler();
     private URL requestUrl;
-    private HttpURLConnection urlConnection;
     private String logUrl;
+    private Map<String, String> header;
+
 
     public enum RequestType {
         GET("GET"), POST("POST");
@@ -45,14 +47,22 @@ public class HttpConnection {
     }
 
     /**
+     * 设置请求头header
+     *
+     * @param header 请求头内容
+     */
+    public void setHttpHeader(HashMap<String, String> header) {
+        this.header = header;
+    }
+
+    /**
      * 网络请求
      *
      * @param type     请求方式{POST,GET}
      * @param param    请求的参数，HashMap键值对的形式
      * @param callback 请求返回的回调
      */
-
-    public synchronized void quest(RequestType type, HashMap<String, String> param, final HttpCallBack callback) {
+    public synchronized void quest(RequestType type, Map<String, String> param, final HttpCallBack callback) {
 
         final int respondCode;
         try {
@@ -63,6 +73,12 @@ public class HttpConnection {
             urlConnection.setConnectTimeout(10 * 1000);
             urlConnection.setReadTimeout(10 * 1000);
             urlConnection.setRequestMethod(String.valueOf(type));
+
+            if (header != null) {
+                for (Map.Entry<String, String> entry : header.entrySet()) {
+                    urlConnection.setRequestProperty(entry.getKey(), entry.getValue());
+                }
+            }
 
             //POST请求参数：因为POST请求的参数在写在流里面
             if (type.equals(RequestType.POST)) {
@@ -125,7 +141,12 @@ public class HttpConnection {
         }
     }
 
-    //读取输入流信息，转化成String
+    /**
+     * 读取输入流信息，转化成String
+     *
+     * @param in
+     * @return
+     */
     private String readInputStream(InputStream in) {
         String result = "";
         String line;

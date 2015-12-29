@@ -1,8 +1,9 @@
-package cn.alien95.alien95library.test.app;
+package cn.alien95.alien95library.app;
 
 import android.app.Application;
 
 import cn.alien95.alien95library.BuildConfig;
+import cn.alien95.set.entrance.AlienSet;
 import cn.alien95.set.http.util.DebugUtils;
 
 /**
@@ -17,5 +18,7 @@ public class App extends Application{
             DebugUtils.initialize("NetWork");
             DebugUtils.setDebug(true);
         }
+
+        AlienSet.init(this);
     }
 }
