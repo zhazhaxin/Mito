@@ -1,4 +1,4 @@
-package cn.alien95.set.http;
+package cn.alien95.set.http.request;
 
 import android.os.Handler;
 
@@ -8,10 +8,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.Map;
 
 import cn.alien95.set.http.util.DebugUtils;
@@ -21,12 +19,24 @@ import cn.alien95.set.http.util.DebugUtils;
  */
 public class HttpConnection {
 
+    private static HttpConnection instance;
     private HttpURLConnection urlConnection;
     private Handler handler = new Handler();
-    private URL requestUrl;
-    private String logUrl;
     private Map<String, String> header;
+    private String logUrl;
 
+    private HttpConnection() {
+    }
+
+    protected static HttpConnection getInstance() {
+        if (instance == null) {
+            synchronized (HttpConnection.class) {
+                if (instance == null)
+                    instance = new HttpConnection();
+            }
+        }
+        return instance;
+    }
 
     public enum RequestType {
         GET("GET"), POST("POST");
@@ -37,21 +47,12 @@ public class HttpConnection {
         }
     }
 
-    public HttpConnection(String url) {
-        try {
-            requestUrl = new URL(url);
-            logUrl = url;
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-    }
-
     /**
      * 设置请求头header
      *
      * @param header 请求头内容
      */
-    public void setHttpHeader(HashMap<String, String> header) {
+    protected void setHttpHeader(Map<String, String> header) {
         this.header = header;
     }
 
@@ -62,12 +63,12 @@ public class HttpConnection {
      * @param param    请求的参数，HashMap键值对的形式
      * @param callback 请求返回的回调
      */
-    public synchronized void quest(RequestType type, Map<String, String> param, final HttpCallBack callback) {
+    protected synchronized void quest(String url, RequestType type, Map<String, String> param, final HttpCallBack callback) {
 
+        logUrl = url;
         final int respondCode;
         try {
-            //连接
-            urlConnection = (HttpURLConnection) requestUrl.openConnection();
+            urlConnection = (HttpURLConnection) new URL(url).openConnection();
             urlConnection.setDoOutput(true);
             urlConnection.setDoInput(true);
             urlConnection.setConnectTimeout(10 * 1000);

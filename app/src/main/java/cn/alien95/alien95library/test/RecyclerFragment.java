@@ -22,9 +22,9 @@ import cn.alien95.alien95library.R;
 import cn.alien95.alien95library.bean.Image;
 import cn.alien95.alien95library.bean.ImageRespond;
 import cn.alien95.alien95library.model.ImageModel;
-import cn.alien95.set.http.HttpCallBack;
 import cn.alien95.set.http.image.HttpRequestImage;
 import cn.alien95.set.http.image.ImageCallBack;
+import cn.alien95.set.http.request.HttpCallBack;
 import cn.alien95.set.recyclerview.BaseViewHolder;
 import cn.alien95.set.recyclerview.RecyclerAdapter;
 
@@ -42,11 +42,11 @@ public class RecyclerFragment extends Fragment {
         super.onCreate(savedInstanceState);
         images = new ArrayList<>();
         adapter = new MyAdapter(images);
-        ImageModel.getImageForNet(1, new HttpCallBack() {
+        ImageModel.getImageForNet(2, new HttpCallBack() {
             @Override
             public void success(String info) {
                 Gson gson = new Gson();
-                ImageRespond respond = gson.fromJson(info,ImageRespond.class);
+                ImageRespond respond = gson.fromJson(info, ImageRespond.class);
                 adapter.addAll(respond.getTngou());
             }
         });
@@ -55,7 +55,7 @@ public class RecyclerFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_recycler,null);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_recycler, null);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
@@ -64,7 +64,7 @@ public class RecyclerFragment extends Fragment {
 
     }
 
-    class MyAdapter extends RecyclerAdapter<Image>{
+    class MyAdapter extends RecyclerAdapter<Image> {
 
         public MyAdapter(List<Image> data) {
             super(data);
@@ -72,12 +72,12 @@ public class RecyclerFragment extends Fragment {
 
         @Override
         public BaseViewHolder<Image> onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new MyViewHolder(getActivity(),R.layout.item_list);
+            return new MyViewHolder(getActivity(), R.layout.item_list);
         }
     }
 
 
-    class MyViewHolder extends BaseViewHolder<Image>{
+    class MyViewHolder extends BaseViewHolder<Image> {
 
         private ImageView image;
 
@@ -89,18 +89,18 @@ public class RecyclerFragment extends Fragment {
         @Override
         public void setData(Image object) {
             super.setData(object);
-            HttpRequestImage.getInstance().requestImage(object.getImg(), new ImageCallBack() {
-                @Override
-                public void success(Bitmap bitmap) {
-                    if(bitmap != null)
-                    image.setImageBitmap(bitmap);
-                }
+            HttpRequestImage.getInstance().requestImageWithCompress(object.getImg(),
+                    3, new ImageCallBack() {
+                        @Override
+                        public void success(Bitmap bitmap) {
+                            image.setImageBitmap(bitmap);
+                        }
 
-                @Override
-                public void failure() {
+                        @Override
+                        public void failure() {
 
-                }
-            });
+                        }
+                    });
 
         }
     }

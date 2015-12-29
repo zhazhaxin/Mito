@@ -1,4 +1,4 @@
-package cn.alien95.set.http;
+package cn.alien95.set.http.request;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -12,15 +12,15 @@ public class HttpQueue {
     private static HttpQueue instance;
     private ExecutorService threadPool;
 
-    private HttpQueue(){
+    private HttpQueue() {
         requestQueue = new LinkedBlockingDeque<>();
         threadPool = Executors.newFixedThreadPool(8);
     }
 
-    public static HttpQueue getInstance(){
-        if(instance == null){
-            synchronized (HttpQueue.class){
-                if(instance == null){
+    public static HttpQueue getInstance() {
+        if (instance == null) {
+            synchronized (HttpQueue.class) {
+                if (instance == null) {
                     instance = new HttpQueue();
                 }
             }
@@ -28,13 +28,13 @@ public class HttpQueue {
         return instance;
     }
 
-    public void addQuest(Runnable runnable){
+    public void addQuest(Runnable runnable) {
         requestQueue.push(runnable);
         start();
     }
 
-    private synchronized void start(){
-        while (requestQueue.peek() != null){
+    private void start() {
+        while (requestQueue.peek() != null) {
             threadPool.execute(requestQueue.poll());
         }
     }

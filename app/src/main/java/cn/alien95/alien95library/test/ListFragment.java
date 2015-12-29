@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import cn.alien95.alien95library.R;
-import cn.alien95.set.http.HttpCallBack;
+import cn.alien95.set.http.request.HttpCallBack;
 import cn.alien95.set.http.request.HttpRequest;
 
 /**
@@ -29,7 +29,7 @@ public class ListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_list, null);
         content = (TextView) view.findViewById(R.id.content);
-            HttpRequest.getInstance("http://www.baidu.com").get(new HttpCallBack() {
+            HttpRequest.getInstance().get("http://www.baidu.com",new HttpCallBack() {
                 @Override
                 public void error() {
 

@@ -17,19 +17,33 @@ public class ImageUtils {
 
     private static Context mContext;
 
-    public static void init(Context context){
+    public static void init(Context context) {
         mContext = context;
     }
 
-    /** 为图片压缩做准备，通过设置inSampleSize参数来压缩
+    /**
+     * 压缩从网络获取的图片，加载到内存
+     *
+     * @param inputStream 网络获取的输入流
+     * @param inSampleSize  压缩的长或宽比例，大小缩小平方倍
+     * @return
+     */
+    public static Bitmap compressBitmapFromInputStream(InputStream inputStream,int inSampleSize) {
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = inSampleSize;
+        return BitmapFactory.decodeStream(inputStream,null, options);
+    }
+
+    /**
+     * 为图片压缩做准备，通过设置inSampleSize参数来压缩
      * 通过reqWidth和reqHeight来计算出合理的inSampleSize
      *
      * @param options   BitmapFactory.Options bitmap参数
      * @param reqWidth  需要设置的宽
      * @param reqHeight 需要设置的高
-     * @return  int 返回一个inSampleSize值来压缩图片
+     * @return int 返回一个inSampleSize值来压缩图片
      */
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // 源图片的高度和宽度
         final int height = options.outHeight;
         final int width = options.outWidth;
@@ -45,33 +59,13 @@ public class ImageUtils {
         return inSampleSize;
     }
 
-    /** 压缩从网络获取的图片，加载到内存
-     *
-     * @param inputStream  网络获取的输入流
-     * @param reqWidth    希望获得Bitmap的宽
-     * @param reqHeight   希望获得Bitmap的高
-     * @return
-     */
-    public static Bitmap compressBitmapFromInputStream(InputStream inputStream,
-                                                         int reqWidth, int reqHeight) {
-        // 第一次解析将inJustDecodeBounds设置为true，来获取图片大小
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        //设置为true，不给像素分配内存,但是可以获取到图片的宽和高等信息，来根据情况进行压缩
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeStream(inputStream, null, options);
-        // 调用上面定义的方法计算inSampleSize值
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-        // 使用获取到的inSampleSize值再次解析图片
-        options.inJustDecodeBounds = false;  //设置了inSampleSize后压缩图片，重新分配内存
-        return BitmapFactory.decodeStream(inputStream, null, options);
-    }
-
     /**
-     * 获取图片硬盘缓存路径
-     * @param uniqueName
+     * 设置图片硬盘缓存路径
+     *
+     * @param uniqueName 路径名，在APP缓存目录下
      * @return
      */
-    public static File getDiskCacheDir(String uniqueName) {
+    public static File setDiskCacheDir(String uniqueName) {
         String cachePath;
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
                 || !Environment.isExternalStorageRemovable()) {
@@ -83,9 +77,10 @@ public class ImageUtils {
     }
 
     /**
+     * MD5加密，把字符串加密成32位乱码
      *
-     * @param key  传入加密的字符串
-     * @return  返回MD5加密后的字符串
+     * @param key 传入加密的字符串
+     * @return 返回MD5加密后的字符串
      */
     public static String MD5(String key) {
         String cacheKey;

@@ -2,10 +2,6 @@ package cn.alien95.set.http.request;
 
 import java.util.Map;
 
-import cn.alien95.set.http.Http;
-import cn.alien95.set.http.HttpCallBack;
-import cn.alien95.set.http.HttpConnection;
-import cn.alien95.set.http.HttpQueue;
 import cn.alien95.set.http.util.DebugUtils;
 
 /**
@@ -20,38 +16,43 @@ public class HttpRequest implements Http {
     private HttpRequest(){
     }
 
-    public static HttpRequest getInstance(String url){
+    public static HttpRequest getInstance(){
         if(instance == null){
             synchronized (HttpRequest.class){
                 if(instance == null)
                 instance = new HttpRequest();
             }
         }
-        httpConnection = new HttpConnection(url);
+        httpConnection = HttpConnection.getInstance();
         return instance;
     }
 
-    public void setDebug(boolean isDebug){
+    public static void setDebug(boolean isDebug,String tag){
         DebugUtils.setDebug(isDebug);
+        DebugUtils.initialize(tag);
+    }
+
+    public void setHttpHeader(Map<String,String> header){
+        httpConnection.setHttpHeader(header);
     }
 
     @Override
-    public void get(final HttpCallBack callBack) {
+    public void get(final String url, final HttpCallBack callBack) {
         //请求加入队列，队列通过start()方法自动请求网络
         HttpQueue.getInstance().addQuest(new Runnable() {
             @Override
             public void run() {
-                httpConnection.quest(HttpConnection.RequestType.GET, null, callBack);
+                httpConnection.quest(url,HttpConnection.RequestType.GET, null, callBack);
             }
         });
     }
 
     @Override
-    public void post(final Map<String, String> params, final HttpCallBack callBack) {
+    public void post(final String url, final Map<String, String> params, final HttpCallBack callBack) {
         HttpQueue.getInstance().addQuest(new Runnable() {
             @Override
             public void run() {
-                httpConnection.quest(HttpConnection.RequestType.POST, params, callBack);
+                httpConnection.quest(url,HttpConnection.RequestType.POST, params, callBack);
             }
         });
     }

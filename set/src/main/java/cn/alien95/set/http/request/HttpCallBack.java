@@ -1,4 +1,4 @@
-package cn.alien95.set.http;
+package cn.alien95.set.http.request;
 
 /**
  * Created by linlongxin on 2015/12/26.
