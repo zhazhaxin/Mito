@@ -1,7 +1,5 @@
 package cn.alien95.set.http;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Handler;
 
 import java.io.BufferedReader;
@@ -16,7 +14,6 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
-import cn.alien95.set.http.image.ImageCallBack;
 import cn.alien95.set.http.util.DebugUtils;
 
 /**
@@ -57,7 +54,7 @@ public class HttpConnection {
 
     public synchronized void quest(RequestType type, HashMap<String, String> param, final HttpCallBack callback) {
 
-        int respondCode;
+        final int respondCode;
         try {
             //连接
             urlConnection = (HttpURLConnection) requestUrl.openConnection();
@@ -88,8 +85,7 @@ public class HttpConnection {
             InputStream in = urlConnection.getInputStream();
             respondCode = urlConnection.getResponseCode();
 
-            DebugUtils.requestLog(logUrl);   //打印log，请求的参数，地址
-
+            //请求失败
             if (respondCode != HttpURLConnection.HTTP_OK) {
                 in = urlConnection.getErrorStream();
                 final int finalRespondCode = respondCode;
@@ -100,6 +96,8 @@ public class HttpConnection {
                     @Override
                     public void run() {
                         callback.failure(finalRespondCode, info);
+                        DebugUtils.requestLog(logUrl);   //打印log，请求的参数，地址
+                        DebugUtils.responseLog("code:" + respondCode + "   " + info);
                     }
                 });
                 return;
@@ -110,7 +108,8 @@ public class HttpConnection {
                     @Override
                     public void run() {
                         callback.success(result);
-                        DebugUtils.responseLog(DebugUtils.requestTimes,result);
+                        DebugUtils.requestLog(logUrl);   //打印log，请求的参数，地址
+                        DebugUtils.responseLog(result);
                     }
                 });
             }
@@ -144,14 +143,5 @@ public class HttpConnection {
         return result;
     }
 
-    //读取输入流，转化成Bitmap
-    public void readBitmap(InputStream inputStream, final ImageCallBack callBack) {
-        final Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                callBack.success(bitmap);
-            }
-        });
-    }
+
 }

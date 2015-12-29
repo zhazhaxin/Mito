@@ -1,4 +1,4 @@
-package cn.alien95.set.utils;
+package cn.alien95.set.util;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -22,7 +22,7 @@ import cn.alien95.set.BuildConfig;
 /**
  * Created by linlongxin on 2015/12/26.
  */
-public class Util {
+public class Utils {
 
     private static String TAG = "";
 
@@ -52,11 +52,11 @@ public class Util {
         return dm.heightPixels;
     }
 
-    public static int dip2dx(float dpValue){
+    public static int dip2px(float dpValue){
         final float scale = mContext.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
-    public static int dx2dip(float pxValue){
+    public static int px2dip(float pxValue){
         final float scale = mContext.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }

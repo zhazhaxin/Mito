@@ -34,13 +34,13 @@ public class DebugUtils {
     public static synchronized void requestLog(String info){
         if(isDebug){
             Log.i(DEBUG_TAG,requestTimes+" times quest:"+info);
-            requestTimes++;
+            responseTimes = requestTimes++;
         }
     }
 
-    public static synchronized void responseLog(int requestTimes,String info){
+    public static synchronized void responseLog(String info){
         if(isDebug){
-            Log.i(DEBUG_TAG,requestTimes+" times response:"+info);
+            Log.i(DEBUG_TAG,responseTimes+" times response:"+info);
         }
     }
 }

@@ -2,17 +2,12 @@ package cn.alien95.set.http.image;
 
 import android.graphics.Bitmap;
 
-import cn.alien95.set.http.HttpCallBack;
-
 /**
  * Created by linlongxin on 2015/12/26.
  */
-public abstract class ImageCallBack extends HttpCallBack{
+public interface ImageCallBack{
 
-    public abstract void success(Bitmap bitmap);
+    void success(Bitmap bitmap);
+    void failure();
 
-    @Override
-    public void success(String info) {
-
-    }
 }

@@ -2,12 +2,11 @@ package cn.alien95.set.http.request;
 
 import java.util.HashMap;
 
-import cn.alien95.set.http.util.DebugUtils;
 import cn.alien95.set.http.Http;
 import cn.alien95.set.http.HttpCallBack;
 import cn.alien95.set.http.HttpConnection;
 import cn.alien95.set.http.HttpQueue;
-import cn.alien95.set.http.image.ImageCallBack;
+import cn.alien95.set.http.util.DebugUtils;
 
 /**
  * Created by linlongxin on 2015/12/26.
@@ -45,7 +44,6 @@ public class HttpRequest implements Http {
                 httpConnection.quest(HttpConnection.RequestType.GET, null, callBack);
             }
         });
-
     }
 
     @Override
@@ -54,16 +52,6 @@ public class HttpRequest implements Http {
             @Override
             public void run() {
                 httpConnection.quest(HttpConnection.RequestType.POST, params, callBack);
-            }
-        });
-    }
-
-    @Override
-    public void imageLoader(final ImageCallBack callBack) {
-        HttpQueue.getInstance().addQuest(new Runnable() {
-            @Override
-            public void run() {
-                httpConnection.quest(HttpConnection.RequestType.GET, null, callBack);
             }
         });
     }

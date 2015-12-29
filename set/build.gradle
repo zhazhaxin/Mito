@@ -12,6 +12,7 @@ android {
         versionName "1.0"
     }
 
+
     buildTypes {
 
         release {
@@ -27,4 +28,8 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:recyclerview-v7:23.1.1'
+    compile 'com.jakewharton:disklrucache:2.0.2'
+    compile 'com.facebook.fresco:fresco:0.6.0+'
+    compile 'com.qiniu:qiniu-android-sdk:7.0.+'
+
 }
