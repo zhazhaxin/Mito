@@ -42,7 +42,6 @@ public class ListFragment extends Fragment {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_list, null);
         cellView = (CellView) view.findViewById(R.id.cell_view);
         httpImageView = (HttpImageView) view.findViewById(R.id.http_image_view);
-//        cellView.setImageWithCompress(imgUrls, 2);
         httpImageView.setImageUrl(imageUrl);
 
         return view;
