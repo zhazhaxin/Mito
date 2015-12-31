@@ -1,7 +1,6 @@
 package cn.alien95.alien95library.test;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.google.gson.Gson;
 
@@ -22,11 +20,10 @@ import cn.alien95.alien95library.R;
 import cn.alien95.alien95library.bean.Image;
 import cn.alien95.alien95library.bean.ImageRespond;
 import cn.alien95.alien95library.model.ImageModel;
-import cn.alien95.set.http.image.HttpRequestImage;
-import cn.alien95.set.http.image.ImageCallBack;
 import cn.alien95.set.http.request.HttpCallBack;
 import cn.alien95.set.recyclerview.BaseViewHolder;
 import cn.alien95.set.recyclerview.RecyclerAdapter;
+import cn.alien95.set.widget.HttpImageView;
 
 /**
  * Created by llxal on 2015/12/21.
@@ -79,29 +76,17 @@ public class RecyclerFragment extends Fragment {
 
     class MyViewHolder extends BaseViewHolder<Image> {
 
-        private ImageView image;
+        private HttpImageView image;
 
         public MyViewHolder(Context context, int layoutId) {
             super(context, layoutId);
-            image = (ImageView) itemView.findViewById(R.id.image);
+            image = (HttpImageView) itemView.findViewById(R.id.image);
         }
 
         @Override
         public void setData(Image object) {
             super.setData(object);
-            HttpRequestImage.getInstance().requestImageWithCompress(object.getImg(),
-                    3, new ImageCallBack() {
-                        @Override
-                        public void success(Bitmap bitmap) {
-                            image.setImageBitmap(bitmap);
-                        }
-
-                        @Override
-                        public void failure() {
-
-                        }
-                    });
-
+            image.setImageUrl(object.getImg());
         }
     }
 

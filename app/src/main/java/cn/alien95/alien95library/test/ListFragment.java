@@ -8,14 +8,17 @@ import android.view.ViewGroup;
 
 import cn.alien95.alien95library.R;
 import cn.alien95.set.widget.CellView;
+import cn.alien95.set.widget.HttpImageView;
 
 /**
  * Created by llxal on 2015/12/20.
  */
 public class ListFragment extends Fragment {
 
+    private HttpImageView httpImageView;
     private CellView cellView;
     private String[] imgUrls;
+    private final String imageUrl = "http://img01.sogoucdn.com/app/a/100520093/0e0fd862f51611ae-70061ff5f96548be-911366d3272119c455bdb8c98dae50ae.jpg";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,7 +41,10 @@ public class ListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_list, null);
         cellView = (CellView) view.findViewById(R.id.cell_view);
-        cellView.setImageWithCompress(imgUrls, 2);
+        httpImageView = (HttpImageView) view.findViewById(R.id.http_image_view);
+//        cellView.setImageWithCompress(imgUrls, 2);
+        httpImageView.setImageUrl(imageUrl);
+
         return view;
     }
 

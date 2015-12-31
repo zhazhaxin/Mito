@@ -61,9 +61,12 @@ public class HttpRequestImage {
         if (loadImageFromMemory(url) != null) {
             Log.i(TAG, "从内存读取图片");
             callBack.success(loadImageFromMemory(url));
+        } else if (loadImageFromDisk(url) != null) {
+            Log.i(TAG, "硬盘读取图片");
+            callBack.success(loadImageFromDisk(url));
         } else {
             Log.i(TAG, "从网络获取图片");
-            loadImageFromNetWithCompress(url, inSampleSize,callBack);
+            loadImageFromNetWithCompress(url, inSampleSize, callBack);
         }
     }
 
@@ -155,13 +158,15 @@ public class HttpRequestImage {
                     final InputStream inputStream = urlConnection.getInputStream();
                     respondCode = urlConnection.getResponseCode();
                     if (respondCode == HttpURLConnection.HTTP_OK) {
-                        final Bitmap bitmap = ImageUtils.compressBitmapFromInputStream(inputStream,inSampleSize);
+                        final Bitmap bitmap = ImageUtils.compressBitmapFromInputStream(inputStream, inSampleSize);
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
                                 callBack.success(bitmap);
-                                if(bitmap != null)
-                                MemoryCache.getInstance().putBitmapToCache(url, bitmap);
+                                if (bitmap != null)
+                                    MemoryCache.getInstance().putBitmapToCache(url, bitmap);
+                                if (inSampleSize <= 1)
+                                    DiskCache.getInstance().writeImageToDisk(url);
                             }
                         });
                     }

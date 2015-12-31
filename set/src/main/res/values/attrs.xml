@@ -4,6 +4,7 @@
     <declare-styleable name="HttpImageView">
         <attr name="compressSize" format="integer"/>
         <attr name="loadImage" format="reference"/>
+        <attr name="failedImage" format="reference"/>
     </declare-styleable>
 
 </resources>

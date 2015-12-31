@@ -4,13 +4,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.alien95.set.http.image.HttpRequestImage;
@@ -25,9 +25,11 @@ public class CellView extends FrameLayout {
     private static final String TAG = "AlienGridView";
     private int deliver;
     private int childWidth;
+    private List<SimpleDraweeView> items = new ArrayList<>();
+    private Adapter adapter;
 
     public CellView(Context context) {
-        this(context, null);
+        super(context);
     }
 
     public CellView(Context context, AttributeSet attrs) {
@@ -49,7 +51,6 @@ public class CellView extends FrameLayout {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         int childCount = getChildCount();
-        Log.i(TAG, "childcount:" + childCount);
         if (childCount == 1) {
             layout(deliver, deliver, Utils.dip2px(204), Utils.dip2px(204));
         } else {
@@ -59,16 +60,31 @@ public class CellView extends FrameLayout {
         }
     }
 
+    public void setAdapter(Adapter adapter){
+        this.adapter = adapter;
+        setViews();
+    }
+
+    private void setViews(){
+        for (int i = 0; i < adapter.getCount(); i++){
+            addView(adapter.getView(adapter.onCreateViewHoder(),this,i));
+        }
+    }
+
+
+
     /**
      * 设置加载图片地址集合
+     *
      * @param data
      */
     public void setImages(String[] data) {
-        for (String url : data) {
+        for (int i = 0; i < data.length; i++) {
             SimpleDraweeView img = new SimpleDraweeView(getContext());
             img.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            img.setImageURI(Uri.parse(url));
+            img.setImageURI(Uri.parse(data[i]));
             addView(img);
+            items.add(i,img);
         }
     }
 
@@ -79,15 +95,16 @@ public class CellView extends FrameLayout {
 
     /**
      * 请求图片的时候选择压缩显示
-     * @param data  图片地址集合
-     * @param inSimpleSize  缩放到长和宽的 inSimpleSize 分之一，大小缩小到平方倍分之一
+     *
+     * @param data         图片地址集合
+     * @param inSimpleSize 缩放到长和宽的 inSimpleSize 分之一，大小缩小到平方倍分之一
      */
     public void setImageWithCompress(String[] data, int inSimpleSize) {
 
-        for (String url : data) {
+        for (int i = 0; i < data.length; i ++) {
             final ImageView imageView = new ImageView(getContext());
             imageView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            HttpRequestImage.getInstance().requestImageWithCompress(url, inSimpleSize, new ImageCallBack() {
+            HttpRequestImage.getInstance().requestImageWithCompress(data[i], inSimpleSize, new ImageCallBack() {
                 @Override
                 public void success(Bitmap bitmap) {
                     imageView.setImageBitmap(bitmap);
