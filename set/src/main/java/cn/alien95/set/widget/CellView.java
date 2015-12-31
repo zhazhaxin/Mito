@@ -1,16 +1,20 @@
 package cn.alien95.set.widget;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
+import cn.alien95.set.http.image.HttpRequestImage;
+import cn.alien95.set.http.image.ImageCallBack;
 import cn.alien95.set.util.Utils;
 
 /**
@@ -55,19 +59,51 @@ public class CellView extends FrameLayout {
         }
     }
 
+    /**
+     * 设置加载图片地址集合
+     * @param data
+     */
     public void setImages(String[] data) {
-        SimpleDraweeView img = new SimpleDraweeView(getContext());
-        img.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         for (String url : data) {
+            SimpleDraweeView img = new SimpleDraweeView(getContext());
+            img.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             img.setImageURI(Uri.parse(url));
             addView(img);
         }
-
     }
 
     public void setImages(List<String> data) {
         String[] urls = (String[]) data.toArray();
         setImages(urls);
+    }
+
+    /**
+     * 请求图片的时候选择压缩显示
+     * @param data  图片地址集合
+     * @param inSimpleSize  缩放到长和宽的 inSimpleSize 分之一，大小缩小到平方倍分之一
+     */
+    public void setImageWithCompress(String[] data, int inSimpleSize) {
+
+        for (String url : data) {
+            final ImageView imageView = new ImageView(getContext());
+            imageView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            HttpRequestImage.getInstance().requestImageWithCompress(url, inSimpleSize, new ImageCallBack() {
+                @Override
+                public void success(Bitmap bitmap) {
+                    imageView.setImageBitmap(bitmap);
+                }
+
+                @Override
+                public void failure() {
+
+                }
+            });
+            addView(imageView);
+        }
+    }
+
+    public void setImagesWithCompress(List<String> data, int inSimpleSize) {
+        setImageWithCompress((String[]) data.toArray(), inSimpleSize);
     }
 
 }

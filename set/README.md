@@ -17,4 +17,12 @@ ViewPager$&Fragment
 通过add()等方法来添加Fragment
 
 ###2,网络请求库
+if (BuildConfig.DEBUG) {
+            HttpRequest.setDebug(true, "NetWork");
+        }
+        AlienSet.init(this);
 图片加载压缩：http://blog.csdn.net/guolin_blog/article/details/9316683
+
+
+CellView使用:
+ Fresco.initialize(this);

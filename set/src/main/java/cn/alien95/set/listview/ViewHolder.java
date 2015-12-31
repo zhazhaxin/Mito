@@ -11,7 +11,7 @@ import android.view.View;
  */
 public class ViewHolder {
 
-    private final String TAG = "listview-viewholder";
+    private final String TAG = "ListView_ViewHolder";
     private static View mConvertView;
     private SparseArray<View> cache;
 
