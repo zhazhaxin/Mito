@@ -1,12 +1,15 @@
 package cn.alien95.alien95library.test;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import cn.alien95.alien95library.R;
+import cn.alien95.set.widget.Adapter;
 import cn.alien95.set.widget.CellView;
 import cn.alien95.set.widget.HttpImageView;
 
@@ -43,8 +46,27 @@ public class ListFragment extends Fragment {
         cellView = (CellView) view.findViewById(R.id.cell_view);
         httpImageView = (HttpImageView) view.findViewById(R.id.http_image_view);
         httpImageView.setImageUrl(imageUrl);
-
+        cellView.setAdapter(new MyAdapter(getActivity()));
         return view;
+    }
+
+    class MyAdapter extends Adapter<String>{
+
+        public MyAdapter(Context context) {
+            super(context);
+        }
+
+        @Override
+        public View getView(ViewGroup parent, int position) {
+            TextView textView = new TextView(getActivity());
+            textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            return textView;
+        }
+
+        @Override
+        public int getCount() {
+            return 6;
+        }
     }
 
 
