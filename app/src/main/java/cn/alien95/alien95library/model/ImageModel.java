@@ -15,5 +15,16 @@ public class ImageModel {
         HashMap<String,String> params = new HashMap<>();
         params.put("id",id + "");
         HttpRequest.getInstance().post(API.getImage,params, callBack);
+
+        for(int i = 3; i < 30; i ++){
+            HashMap<String,String> param = new HashMap<>();
+            params.put("id",i + "");
+            HttpRequest.getInstance().post(API.getImage, param, new HttpCallBack() {
+                @Override
+                public void success(String info) {
+
+                }
+            });
+        }
     }
 }

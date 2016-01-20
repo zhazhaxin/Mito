@@ -44,8 +44,8 @@ public class ListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_list, null);
         cellView = (CellView) view.findViewById(R.id.cell_view);
-        httpImageView = (HttpImageView) view.findViewById(R.id.http_image_view);
-        httpImageView.setImageUrl(imageUrl);
+//        httpImageView = (HttpImageView) view.findViewById(R.id.http_image_view);
+//        httpImageView.setImageUrl(imageUrl);
         cellView.setAdapter(new MyAdapter(getActivity()));
         return view;
     }
@@ -60,12 +60,14 @@ public class ListFragment extends Fragment {
         public View getView(ViewGroup parent, int position) {
             TextView textView = new TextView(getActivity());
             textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            textView.setText("CAO");
+            textView.setBackgroundResource(R.color.colorAccent);
             return textView;
         }
 
         @Override
         public int getCount() {
-            return 6;
+            return 8;
         }
     }
 

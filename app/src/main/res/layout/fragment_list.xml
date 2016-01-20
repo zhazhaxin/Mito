@@ -9,14 +9,14 @@
     <cn.alien95.set.widget.CellView
         android:id="@+id/cell_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent" />
 
-    <cn.alien95.set.widget.HttpImageView
-        android:id="@+id/http_image_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
-        app:failedImage="@mipmap/failed"
-        app:loadImage="@mipmap/loading" />
+    <!--<cn.alien95.set.widget.HttpImageView-->
+        <!--android:id="@+id/http_image_view"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:scaleType="centerCrop"-->
+        <!--app:failedImage="@mipmap/failed"-->
+        <!--app:loadImage="@mipmap/loading" />-->
 
 </LinearLayout>

@@ -40,13 +40,13 @@ public class HttpRequestImage {
 
     public void requestImage(String url, ImageCallBack callBack) {
         if (loadImageFromMemory(url) != null) {
-            Log.i(TAG, "从内存读取图片");
+            Log.i(TAG, "Get Picture from memoryCache");
             callBack.success(loadImageFromMemory(url));
         } else if (loadImageFromDisk(url) != null) {
-            Log.i(TAG, "硬盘读取图片");
+            Log.i(TAG, "Get Picture from diskCache");
             callBack.success(loadImageFromDisk(url));
         } else {
-            Log.i(TAG, "从网络获取图片");
+            Log.i(TAG, "Get Picture from the network");
             loadImageFromNet(url, callBack);
         }
     }
@@ -59,13 +59,13 @@ public class HttpRequestImage {
      */
     public void requestImageWithCompress(String url, int inSampleSize, ImageCallBack callBack) {
         if (loadImageFromMemory(url) != null) {
-            Log.i(TAG, "从内存读取图片");
+            Log.i(TAG, "Get Picture from memoryCache");
             callBack.success(loadImageFromMemory(url));
         } else if (loadImageFromDisk(url) != null) {
-            Log.i(TAG, "硬盘读取图片");
+            Log.i(TAG, "Get Picture from diskCache");
             callBack.success(loadImageFromDisk(url));
         } else {
-            Log.i(TAG, "从网络获取图片");
+            Log.i(TAG, "Get Picture from the network");
             loadImageFromNetWithCompress(url, inSampleSize, callBack);
         }
     }
@@ -91,7 +91,7 @@ public class HttpRequestImage {
     }
 
     public HttpURLConnection getHttpUrlConnection(String url) {
-        DebugUtils.requestLog(url);
+        DebugUtils.requestImageLog(url);
         HttpURLConnection urlConnection = null;
         try {
             urlConnection = (HttpURLConnection) new URL(url).openConnection();
@@ -113,7 +113,7 @@ public class HttpRequestImage {
      * @param url
      * @param callBack
      */
-    private void loadImageFromNet(final String url, final ImageCallBack callBack) {
+    private synchronized void loadImageFromNet(final String url, final ImageCallBack callBack) {
         HttpQueue.getInstance().addQuest(new Runnable() {
             @Override
             public void run() {
@@ -148,7 +148,7 @@ public class HttpRequestImage {
      * @param inSampleSize
      * @param callBack
      */
-    public void loadImageFromNetWithCompress(final String url, final int inSampleSize, final ImageCallBack callBack) {
+    public synchronized void loadImageFromNetWithCompress(final String url, final int inSampleSize, final ImageCallBack callBack) {
         HttpQueue.getInstance().addQuest(new Runnable() {
             @Override
             public void run() {

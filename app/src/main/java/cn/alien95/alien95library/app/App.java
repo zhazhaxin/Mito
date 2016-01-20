@@ -4,7 +4,7 @@ import android.app.Application;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 
-import cn.alien95.set.BuildConfig;
+import cn.alien95.alien95library.BuildConfig;
 import cn.alien95.set.entrance.AlienSet;
 import cn.alien95.set.http.request.HttpRequest;
 

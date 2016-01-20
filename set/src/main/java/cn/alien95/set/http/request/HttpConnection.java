@@ -102,6 +102,9 @@ public class HttpConnection {
             InputStream in = urlConnection.getInputStream();
             respondCode = urlConnection.getResponseCode();
 
+            //打印请求日志
+            DebugUtils.requestLog(logUrl);   //打印log，请求的参数，地址
+
             //请求失败
             if (respondCode != HttpURLConnection.HTTP_OK) {
                 in = urlConnection.getErrorStream();
@@ -112,9 +115,10 @@ public class HttpConnection {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        callback.failure(finalRespondCode, info);
-                        DebugUtils.requestLog(logUrl);   //打印log，请求的参数，地址
-                        DebugUtils.responseLog("code:" + respondCode + "   " + info);
+                        if (callback != null) {
+                            callback.failure(finalRespondCode, info);
+                            callback.getRequestTimes(respondCode, info, DebugUtils.requestTimes - 1);
+                        }
                     }
                 });
                 return;
@@ -124,9 +128,10 @@ public class HttpConnection {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        callback.success(result);
-                        DebugUtils.requestLog(logUrl);   //打印log，请求的参数，地址
-                        DebugUtils.responseLog(result);
+                        if (callback != null) {
+                            callback.success(result);
+                            callback.getRequestTimes(respondCode, result, DebugUtils.requestTimes - 1);
+                        }
                     }
                 });
             }
@@ -136,7 +141,10 @@ public class HttpConnection {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    callback.error();
+                    if (callback != null) {
+                        callback.error();
+                        callback.getRequestTimes("抛出异常：" + e1.getMessage(), DebugUtils.requestTimes - 1);
+                    }
                 }
             });
         }

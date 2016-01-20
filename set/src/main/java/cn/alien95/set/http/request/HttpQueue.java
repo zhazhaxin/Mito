@@ -14,7 +14,7 @@ public class HttpQueue {
 
     private HttpQueue() {
         requestQueue = new LinkedBlockingDeque<>();
-        threadPool = Executors.newFixedThreadPool(8);
+        threadPool = Executors.newFixedThreadPool(4);
     }
 
     public static HttpQueue getInstance() {

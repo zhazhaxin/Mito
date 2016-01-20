@@ -22,7 +22,5 @@ public class MainActivity extends AppCompatActivity {
 
         pagerAdapter.add(new ListFragment());
         pagerAdapter.add(new RecyclerFragment());
-
-
     }
 }

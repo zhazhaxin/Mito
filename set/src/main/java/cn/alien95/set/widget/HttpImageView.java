@@ -20,7 +20,7 @@ public class HttpImageView extends ImageView {
     private int failedImageId;
 
     public HttpImageView(Context context) {
-        this(context,null,0);
+        this(context, null, 0);
     }
 
     public HttpImageView(Context context, AttributeSet attrs) {

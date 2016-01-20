@@ -1,5 +1,7 @@
 package cn.alien95.set.http.request;
 
+import android.support.annotation.NonNull;
+
 import java.util.Map;
 
 import cn.alien95.set.http.util.DebugUtils;
@@ -48,7 +50,7 @@ public class HttpRequest implements Http {
     }
 
     @Override
-    public void post(final String url, final Map<String, String> params, final HttpCallBack callBack) {
+    public void post(final String url, final Map<String, String> params, @NonNull final HttpCallBack callBack) {
         HttpQueue.getInstance().addQuest(new Runnable() {
             @Override
             public void run() {

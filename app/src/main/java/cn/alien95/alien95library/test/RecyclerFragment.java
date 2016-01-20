@@ -39,7 +39,7 @@ public class RecyclerFragment extends Fragment {
         super.onCreate(savedInstanceState);
         images = new ArrayList<>();
         adapter = new MyAdapter(images);
-        ImageModel.getImageForNet(2, new HttpCallBack() {
+        ImageModel.getImageForNet(1, new HttpCallBack() {
             @Override
             public void success(String info) {
                 Gson gson = new Gson();
@@ -86,7 +86,7 @@ public class RecyclerFragment extends Fragment {
         @Override
         public void setData(Image object) {
             super.setData(object);
-            image.setImageUrl(object.getImg());
+            image.setImageUrlWithCompress(object.getImg(), 2);
         }
     }
 

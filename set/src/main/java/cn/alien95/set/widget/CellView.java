@@ -67,7 +67,7 @@ public class CellView extends FrameLayout {
 
     private void setViews(){
         for (int i = 0; i < adapter.getCount(); i++){
-            addView(adapter.getView(adapter.onCreateViewHoder(),this,i));
+            addView(adapter.getView(this,i));
         }
     }
 
