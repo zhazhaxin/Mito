@@ -28,8 +28,9 @@ public class Utils {
 
     private static Context mContext;
 
-    public static void initialize(Context context){
+    public static void initialize(Context context,String tag){
         mContext=context;
+        TAG = tag;
     }
 
     public void setDebug(String TAG){

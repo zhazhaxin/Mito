@@ -24,7 +24,9 @@ public abstract class Adapter<T> {
 
     public abstract View getView(ViewGroup parent, int position);
 
-    public abstract int getCount();
+    public int getCount(){
+        return count;
+    }
 
     public void add(T object){
         data.add(object);
@@ -34,6 +36,11 @@ public abstract class Adapter<T> {
     public void addAll(T[] objects){
         data.addAll(Arrays.asList(objects));
         count += objects.length;
+        notifyDataChanged();
+    }
+
+    public void notifyDataChanged(){
+
     }
 
 }

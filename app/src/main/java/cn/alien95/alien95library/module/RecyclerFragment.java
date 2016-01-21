@@ -1,10 +1,9 @@
-package cn.alien95.alien95library.test;
+package cn.alien95.alien95library.module;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -55,8 +54,8 @@ public class RecyclerFragment extends Fragment {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_recycler, null);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(adapter);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+//        recyclerView.setAdapter(adapter);
+//        recyclerView.setItemAnimator(new DefaultItemAnimator());
         return view;
 
     }
@@ -69,7 +68,7 @@ public class RecyclerFragment extends Fragment {
 
         @Override
         public BaseViewHolder<Image> onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new MyViewHolder(getActivity(), R.layout.item_list);
+            return new MyViewHolder(getActivity(), R.layout.item_recycler);
         }
     }
 
@@ -80,13 +79,13 @@ public class RecyclerFragment extends Fragment {
 
         public MyViewHolder(Context context, int layoutId) {
             super(context, layoutId);
-            image = (HttpImageView) itemView.findViewById(R.id.image);
+            image = (HttpImageView) itemView.findViewById(R.id.http_image_view);
         }
 
         @Override
         public void setData(Image object) {
             super.setData(object);
-            image.setImageUrlWithCompress(object.getImg(), 2);
+            image.setImageUrlWithCompress(object.getImg(), 3);
         }
     }
 

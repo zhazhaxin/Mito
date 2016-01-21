@@ -22,8 +22,8 @@ import cn.alien95.set.util.Utils;
  */
 public class CellView extends FrameLayout {
 
-    private static final String TAG = "AlienGridView";
-    private int deliver;
+    private static final String TAG = "CellView";
+    private int spacing;
     private int childWidth;
     private List<SimpleDraweeView> items = new ArrayList<>();
     private Adapter adapter;
@@ -38,39 +38,40 @@ public class CellView extends FrameLayout {
 
     public CellView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        deliver = Utils.dip2px(4);
+        spacing = Utils.dip2px(4);
         childWidth = (Utils.getScreenWidth() - Utils.dip2px(32) - Utils.dip2px(16)) / 3;
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        measureChildren(widthMeasureSpec, widthMeasureSpec);
+        measureChildren(widthMeasureSpec, heightMeasureSpec);
+        setMeasuredDimension(widthMeasureSpec,heightMeasureSpec);
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         int childCount = getChildCount();
         if (childCount == 1) {
-            layout(deliver, deliver, Utils.dip2px(204), Utils.dip2px(204));
+            layout(spacing, spacing, Utils.dip2px(204), Utils.dip2px(204));
         } else {
             for (int i = 0; i < (childCount > 9 ? 9 : childCount); i++) {
-                getChildAt(i).layout(deliver * (i % 3 + 1) + childWidth * (i % 3), i / 3 * childWidth + deliver * (i / 3 + 1), deliver * (i % 3 + 1) + childWidth * (i % 3 + 1), deliver * (i / 3 + 1) + (i / 3 + 1) * childWidth);
+                getChildAt(i).layout(spacing * (i % 3 + 1) + childWidth * (i % 3), i / 3 * childWidth + spacing * (i / 3 + 1),
+                        spacing * (i % 3 + 1) + childWidth * (i % 3 + 1), spacing * (i / 3 + 1) + (i / 3 + 1) * childWidth);
             }
         }
     }
 
-    public void setAdapter(Adapter adapter){
+    public void setAdapter(Adapter adapter) {
         this.adapter = adapter;
-        setViews();
+        addViews();
     }
 
-    private void setViews(){
-        for (int i = 0; i < adapter.getCount(); i++){
-            addView(adapter.getView(this,i));
+    private void addViews() {
+        for (int i = 0; i < adapter.getCount(); i++) {
+            addView(adapter.getView(this, i));
         }
     }
-
 
 
     /**
@@ -84,7 +85,7 @@ public class CellView extends FrameLayout {
             img.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             img.setImageURI(Uri.parse(data[i]));
             addView(img);
-            items.add(i,img);
+            items.add(i, img);
         }
     }
 
@@ -101,7 +102,7 @@ public class CellView extends FrameLayout {
      */
     public void setImageWithCompress(String[] data, int inSimpleSize) {
 
-        for (int i = 0; i < data.length; i ++) {
+        for (int i = 0; i < data.length; i++) {
             final ImageView imageView = new ImageView(getContext());
             imageView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             HttpRequestImage.getInstance().requestImageWithCompress(data[i], inSimpleSize, new ImageCallBack() {

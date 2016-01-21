@@ -1,4 +1,4 @@
-package cn.alien95.alien95library.test;
+package cn.alien95.alien95library.module;
 
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;

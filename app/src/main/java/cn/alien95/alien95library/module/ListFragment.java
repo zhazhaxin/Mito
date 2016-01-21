@@ -1,4 +1,5 @@
-package cn.alien95.alien95library.test;
+
+package cn.alien95.alien95library.module;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -6,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import cn.alien95.alien95library.R;
 import cn.alien95.set.widget.Adapter;
@@ -18,10 +18,9 @@ import cn.alien95.set.widget.HttpImageView;
  */
 public class ListFragment extends Fragment {
 
-    private HttpImageView httpImageView;
     private CellView cellView;
     private String[] imgUrls;
-    private final String imageUrl = "http://img01.sogoucdn.com/app/a/100520093/0e0fd862f51611ae-70061ff5f96548be-911366d3272119c455bdb8c98dae50ae.jpg";
+    private CellViewAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,31 +43,29 @@ public class ListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_list, null);
         cellView = (CellView) view.findViewById(R.id.cell_view);
-//        httpImageView = (HttpImageView) view.findViewById(R.id.http_image_view);
-//        httpImageView.setImageUrl(imageUrl);
-        cellView.setAdapter(new MyAdapter(getActivity()));
+        cellView.setBackgroundResource(R.color.colorAccent);
+        adapter = new CellViewAdapter(getActivity());
+        adapter.addAll(imgUrls);
+        cellView.setAdapter(adapter);
         return view;
     }
 
-    class MyAdapter extends Adapter<String>{
+    class CellViewAdapter extends Adapter<String> {
 
-        public MyAdapter(Context context) {
+        private HttpImageView httpImageView;
+
+        public CellViewAdapter(Context context) {
             super(context);
         }
 
         @Override
         public View getView(ViewGroup parent, int position) {
-            TextView textView = new TextView(getActivity());
-            textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            textView.setText("CAO");
-            textView.setBackgroundResource(R.color.colorAccent);
-            return textView;
+            View item = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycler, null);
+            httpImageView = (HttpImageView) item.findViewById(R.id.http_image_view);
+            httpImageView.setImageUrl(imgUrls[position]);
+            return item;
         }
 
-        @Override
-        public int getCount() {
-            return 8;
-        }
     }
 
 

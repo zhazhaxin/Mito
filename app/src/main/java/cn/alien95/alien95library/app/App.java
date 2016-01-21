@@ -17,9 +17,11 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         Fresco.initialize(this);
+
         if (BuildConfig.DEBUG) {
             HttpRequest.setDebug(true, "NetWork");
+            AlienSet.init(this, "Library");
         }
-        AlienSet.init(this);
+
     }
 }

@@ -10,8 +10,8 @@ import cn.alien95.set.util.Utils;
  */
 public class AlienSet {
 
-    public static void init(Context context){
-        Utils.initialize(context);
+    public static void init(Context context,String debugTag){
+        Utils.initialize(context,debugTag);
         ImageUtils.init(context);
     }
 }
