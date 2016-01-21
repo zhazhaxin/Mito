@@ -15,26 +15,25 @@ public class HttpRequest implements Http {
 
     private static HttpRequest instance;
 
-    private HttpRequest(){
+    private HttpRequest() {
     }
 
-    public static HttpRequest getInstance(){
-        if(instance == null){
-            synchronized (HttpRequest.class){
-                if(instance == null)
-                instance = new HttpRequest();
+    public static HttpRequest getInstance() {
+        if (instance == null) {
+            synchronized (HttpRequest.class) {
+                if (instance == null)
+                    instance = new HttpRequest();
             }
         }
         httpConnection = HttpConnection.getInstance();
         return instance;
     }
 
-    public static void setDebug(boolean isDebug,String tag){
-        DebugUtils.setDebug(isDebug);
-        DebugUtils.initialize(tag);
+    public static void setDebug(boolean isDebug, String tag) {
+        DebugUtils.setDebug(isDebug, tag);
     }
 
-    public void setHttpHeader(Map<String,String> header){
+    public void setHttpHeader(Map<String, String> header) {
         httpConnection.setHttpHeader(header);
     }
 
@@ -44,7 +43,7 @@ public class HttpRequest implements Http {
         HttpQueue.getInstance().addQuest(new Runnable() {
             @Override
             public void run() {
-                httpConnection.quest(url,HttpConnection.RequestType.GET, null, callBack);
+                httpConnection.quest(url, HttpConnection.RequestType.GET, null, callBack);
             }
         });
     }
@@ -54,7 +53,7 @@ public class HttpRequest implements Http {
         HttpQueue.getInstance().addQuest(new Runnable() {
             @Override
             public void run() {
-                httpConnection.quest(url,HttpConnection.RequestType.POST, params, callBack);
+                httpConnection.quest(url, HttpConnection.RequestType.POST, params, callBack);
             }
         });
     }

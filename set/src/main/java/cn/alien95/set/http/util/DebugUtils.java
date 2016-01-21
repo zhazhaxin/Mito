@@ -14,12 +14,9 @@ public class DebugUtils {
 
     public static boolean isDebug = false;  //是否开启debug模式，默认关闭
 
-    public static void initialize(String tag) {
-        DEBUG_TAG = tag;
-    }
-
-    public static void setDebug(boolean debug) {
+    public static void setDebug(boolean debug, String tag) {
         isDebug = debug;
+        DEBUG_TAG = tag;
     }
 
     public static synchronized void Log(String info) {

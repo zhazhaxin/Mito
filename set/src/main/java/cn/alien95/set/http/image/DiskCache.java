@@ -28,7 +28,7 @@ public class DiskCache {
 
     private DiskCache() {
         try {
-            File cacheDir = ImageUtils.setDiskCacheDir(IMAGE_CACHE_PATH);
+            File cacheDir = Utils.setDiskCacheDir(IMAGE_CACHE_PATH);
             if (!cacheDir.exists()) {
                 cacheDir.mkdirs();
             }
@@ -55,7 +55,7 @@ public class DiskCache {
      * @param imageUrl 图片地址
      */
     public void writeImageToDisk(final String imageUrl) {
-        final String key = ImageUtils.MD5(imageUrl);
+        final String key = Utils.MD5(imageUrl);
         HttpQueue.getInstance().addQuest(new Runnable() {
             @Override
             public void run() {
@@ -89,7 +89,7 @@ public class DiskCache {
      */
     public Bitmap readImageFromDisk(String imageUrl) {
         try {
-            String key = ImageUtils.MD5(imageUrl);
+            String key = Utils.MD5(imageUrl);
             DiskLruCache.Snapshot snapShot = diskLruCache.get(key);
             if (snapShot != null) {
                 InputStream is = snapShot.getInputStream(0);

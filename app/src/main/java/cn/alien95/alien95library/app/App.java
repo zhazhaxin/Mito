@@ -2,7 +2,6 @@ package cn.alien95.alien95library.app;
 
 import android.app.Application;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
 
 import cn.alien95.alien95library.BuildConfig;
 import cn.alien95.set.entrance.AlienSet;
@@ -16,12 +15,12 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Fresco.initialize(this);
 
         if (BuildConfig.DEBUG) {
-            HttpRequest.setDebug(true, "NetWork");
-            AlienSet.init(this, "Library");
+            HttpRequest.setDebug(true, "NetWork");   //关于网络的调试,日志输出
+            AlienSet.init(this);  //工具的调试输出
         }
+        AlienSet.setDebug(true, "Library");
 
     }
 }

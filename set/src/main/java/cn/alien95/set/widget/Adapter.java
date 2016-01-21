@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import cn.alien95.set.util.MessageNotify;
+
 /**
  * Created by linlongxin on 2015/12/31.
  */
@@ -31,6 +33,7 @@ public abstract class Adapter<T> {
     public void add(T object){
         data.add(object);
         count ++ ;
+        notifyDataChanged();
     }
 
     public void addAll(T[] objects){
@@ -40,7 +43,7 @@ public abstract class Adapter<T> {
     }
 
     public void notifyDataChanged(){
-
+        MessageNotify.getInstance().sendMessage();
     }
 
 }

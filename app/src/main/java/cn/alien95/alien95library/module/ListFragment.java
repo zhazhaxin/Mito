@@ -35,7 +35,7 @@ public class ListFragment extends Fragment {
                 "http://cdn4.infoqstatic.com/statics_s2_20151224-0209/resource/articles/websocket-desktop-agility-web-applications/zh/smallimage/logo-cloud.jpg",
                 "http://cdn3.infoqstatic.com/statics_s2_20151224-0209/resource/articles/the-multithreading-of-netty-cases/zh/smallimage/logo-tosca.jpg",
                 "http://cdn4.infoqstatic.com/statics_s2_20151224-0209/resource/articles/Scala-Design/zh/smallimage/HiRes%20(2).jpg",
-                "http://cdn4.infoqstatic.com/statics_s2_20151224-0209/resource/articles/javaagent-illustrated/zh/smallimage/java.jpeg"
+//                "http://cdn4.infoqstatic.com/statics_s2_20151224-0209/resource/articles/javaagent-illustrated/zh/smallimage/java.jpeg"
         };
     }
 
@@ -44,9 +44,10 @@ public class ListFragment extends Fragment {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_list, null);
         cellView = (CellView) view.findViewById(R.id.cell_view);
         cellView.setBackgroundResource(R.color.colorAccent);
-        adapter = new CellViewAdapter(getActivity());
-        adapter.addAll(imgUrls);
-        cellView.setAdapter(adapter);
+//        adapter = new CellViewAdapter(getActivity());
+//        cellView.setAdapter(adapter);
+//        adapter.addAll(imgUrls);
+        cellView.setImagesWithCompress(imgUrls,3);
         return view;
     }
 
