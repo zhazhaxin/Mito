@@ -53,11 +53,17 @@ public class HttpRequestImage {
 
     /**
      * 图片网络请求压缩处理
+     * 图片压缩处理的时候内存缓存和硬盘缓存的key是通过url+inSampleSize 通过MD5加密的
      *
      * @param url
      * @param callBack
      */
-    public void requestImageWithCompress(String url, int inSampleSize, ImageCallBack callBack) {
+    public synchronized void requestImageWithCompress(String url, int inSampleSize, ImageCallBack callBack) {
+        if (inSampleSize <= 1) {
+            requestImage(url, callBack);
+            return;
+        }
+        Log.i(TAG, "requestImageWithCompress");
         if (loadImageFromMemory(url) != null) {
             Log.i(TAG, "Get Picture from memoryCache");
             callBack.success(loadImageFromMemory(url));
@@ -76,7 +82,7 @@ public class HttpRequestImage {
      * @param key
      * @return
      */
-    private Bitmap loadImageFromMemory(String key) {
+    public Bitmap loadImageFromMemory(String key) {
         return MemoryCache.getInstance().getBitmapFromMemCache(key);
     }
 
@@ -86,7 +92,7 @@ public class HttpRequestImage {
      * @param imageUrl
      * @return
      */
-    private Bitmap loadImageFromDisk(String imageUrl) {
+    public Bitmap loadImageFromDisk(String imageUrl) {
         return DiskCache.getInstance().readImageFromDisk(imageUrl);
     }
 
@@ -129,8 +135,11 @@ public class HttpRequestImage {
                             @Override
                             public void run() {
                                 callBack.success(bitmap);
-                                MemoryCache.getInstance().putBitmapToCache(url, bitmap);
-                                DiskCache.getInstance().writeImageToDisk(url);
+                                if (bitmap != null) {
+                                    MemoryCache.getInstance().putBitmapToCache(url, bitmap);
+                                    DiskCache.getInstance().writeImageToDisk(url, bitmap);
+                                }
+
                             }
                         });
                     }
@@ -158,15 +167,16 @@ public class HttpRequestImage {
                     final InputStream inputStream = urlConnection.getInputStream();
                     respondCode = urlConnection.getResponseCode();
                     if (respondCode == HttpURLConnection.HTTP_OK) {
-                        final Bitmap bitmap = ImageUtils.compressBitmapFromInputStream(inputStream, inSampleSize);
+                        final Bitmap fullBitmap = BitmapFactory.decodeStream(inputStream);
+                        final Bitmap compressBitmap = ImageUtils.compressBitmapFromInputStream(inputStream, inSampleSize);
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                callBack.success(bitmap);
-                                if (bitmap != null)
-                                    MemoryCache.getInstance().putBitmapToCache(url, bitmap);
-                                if (inSampleSize <= 1)
-                                    DiskCache.getInstance().writeImageToDisk(url);
+                                callBack.success(compressBitmap);
+                                if (fullBitmap != null) {
+                                    MemoryCache.getInstance().putBitmapToCache(url, fullBitmap);
+                                    DiskCache.getInstance().writeImageToDisk(url, fullBitmap);
+                                }
                             }
                         });
                     }

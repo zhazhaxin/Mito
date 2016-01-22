@@ -10,16 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.gson.Gson;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.alien95.alien95library.R;
 import cn.alien95.alien95library.bean.Image;
-import cn.alien95.alien95library.bean.ImageRespond;
-import cn.alien95.alien95library.model.ImageModel;
-import cn.alien95.set.http.request.HttpCallBack;
 import cn.alien95.set.recyclerview.BaseViewHolder;
 import cn.alien95.set.recyclerview.RecyclerAdapter;
 import cn.alien95.set.widget.HttpImageView;
@@ -38,14 +33,14 @@ public class RecyclerFragment extends Fragment {
         super.onCreate(savedInstanceState);
         images = new ArrayList<>();
         adapter = new MyAdapter(images);
-        ImageModel.getImageForNet(1, new HttpCallBack() {
-            @Override
-            public void success(String info) {
-                Gson gson = new Gson();
-                ImageRespond respond = gson.fromJson(info, ImageRespond.class);
-                adapter.addAll(respond.getTngou());
-            }
-        });
+//        ImageModel.getImageForNet(1, new HttpCallBack() {
+//            @Override
+//            public void success(String info) {
+//                Gson gson = new Gson();
+//                ImageRespond respond = gson.fromJson(info, ImageRespond.class);
+//                adapter.addAll(respond.getTngou());
+//            }
+//        });
     }
 
     @Nullable

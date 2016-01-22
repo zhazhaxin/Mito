@@ -16,11 +16,12 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
+        AlienSet.init(this);  //工具的调试输出
         if (BuildConfig.DEBUG) {
             HttpRequest.setDebug(true, "NetWork");   //关于网络的调试,日志输出
-            AlienSet.init(this);  //工具的调试输出
+            AlienSet.setDebug(true, "Library");
         }
-        AlienSet.setDebug(true, "Library");
+
 
     }
 }

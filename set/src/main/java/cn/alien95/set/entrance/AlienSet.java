@@ -2,7 +2,7 @@ package cn.alien95.set.entrance;
 
 import android.content.Context;
 
-import cn.alien95.set.util.Utils;
+import alien95.cn.util.Utils;
 
 /**
  * Created by linlongxin on 2015/12/29.

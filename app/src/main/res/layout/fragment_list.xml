@@ -4,12 +4,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#08000000">
 
         <cn.alien95.set.widget.CellView
             android:id="@+id/cell_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+    </ScrollView>
 
 </LinearLayout>

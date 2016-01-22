@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import cn.alien95.set.util.MessageNotify;
+import alien95.cn.util.MessageNotify;
 
 /**
  * Created by linlongxin on 2015/12/31.

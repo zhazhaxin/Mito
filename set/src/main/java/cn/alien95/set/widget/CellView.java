@@ -1,32 +1,38 @@
 package cn.alien95.set.widget;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
+import android.graphics.Color;
 import android.util.AttributeSet;
+import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 
+import alien95.cn.util.MessageNotify;
+import alien95.cn.util.Utils;
 import cn.alien95.set.http.image.HttpRequestImage;
 import cn.alien95.set.http.image.ImageCallBack;
-import cn.alien95.set.util.MessageNotify;
-import cn.alien95.set.util.Utils;
+import cn.alien95.set.ui.LookImageActivity;
 
 /**
  * Created by linlongxin on 2015/12/28.
  */
 public class CellView extends FrameLayout {
 
+    public static final String IMAGES_DATA = "DATA";
+    public static final String IMAGE_NUM = "IMAGE_NUM";
     private static final String TAG = "CellView";
     private int spacing;
     private int childWidth;
-    private List<HttpImageView> items = new ArrayList<>();
     private Adapter adapter;
+    private String[] imagesData;
 
     public CellView(Context context) {
         super(context);
@@ -45,8 +51,25 @@ public class CellView extends FrameLayout {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        measureChildren(widthMeasureSpec, heightMeasureSpec);
-        setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
+
+        /**
+         * 这里这样写是为了解决在ScrollView下面高度的问题。
+         */
+        int measureMode = MeasureSpec.getMode(widthMeasureSpec);
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        int childCount = getChildCount();
+        if (childCount == 1) {
+            heightMeasureSpec = MeasureSpec.makeMeasureSpec((int) (childWidth * 2.5), measureMode);
+        } else if (childCount == 2) {
+            heightMeasureSpec = MeasureSpec.makeMeasureSpec((int) (childWidth * 1.5 + spacing), measureMode);
+        } else {
+            if (childCount % 3 == 0) {
+                heightMeasureSpec = MeasureSpec.makeMeasureSpec(childWidth * childCount / 3 + spacing * (childCount / 3 + 1), measureMode);
+            } else
+                heightMeasureSpec = MeasureSpec.makeMeasureSpec(childWidth * (childCount / 3 + 1) + spacing * (childCount / 3 + 2), measureMode);
+        }
+        int height = MeasureSpec.getSize(heightMeasureSpec);
+        setMeasuredDimension(width, height);
     }
 
     @Override
@@ -57,7 +80,6 @@ public class CellView extends FrameLayout {
         } else if (childCount == 2) {
             getChildAt(0).layout(spacing, spacing, (int) (childWidth * 1.5 + spacing), (int) (childWidth * 1.5 + spacing));
             getChildAt(1).layout((int) (childWidth * 1.5 + spacing * 2), spacing, childWidth * 3 + spacing * 2, (int) (childWidth * 1.5 + spacing));
-
         } else {
             for (int i = 0; i < (childCount > 9 ? 9 : childCount); i++) {
                 getChildAt(i).layout(spacing * (i % 3 + 1) + childWidth * (i % 3), i / 3 * childWidth + spacing * (i / 3 + 1),
@@ -85,12 +107,18 @@ public class CellView extends FrameLayout {
     }
 
     /**
-     * 添加adapter中所有的view
+     * 添加adapter中所有的view,这里必须是public，因为抵用了MessageNotify.getInstance().registerEvent()，不然其他类不能调用
      */
     public void addViews() {
-        for (int i = 0; i < adapter.getCount(); i++) {
-            addView(adapter.getView(this, i));
-        }
+        if (adapter.getCount() > 9) {
+            for (int i = 0; i < 8; i++) {
+                addView(adapter.getView(this, i));
+            }
+            setEndView(adapter.getView(this, 8));
+        } else
+            for (int i = 0; i < adapter.getCount(); i++) {
+                addView(adapter.getView(this, i));
+            }
     }
 
 
@@ -100,13 +128,39 @@ public class CellView extends FrameLayout {
      * @param data 数据集合
      */
     public void setImages(String[] data) {
-        for (int i = 0; i < data.length; i++) {
-            HttpImageView img = new HttpImageView(getContext());
-            img.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            img.setImageURI(Uri.parse(data[i]));
-            addView(img);
-            items.add(i, img);
+        imagesData = data;
+        if (data.length > 9) {
+            for (int i = 0; i < 8; i++) {
+                addView(getHttpImageView(data[i], i));
+            }
+            setEndView(getHttpImageView(data[8], 8));
         }
+        for (int i = 0; i < data.length; i++) {
+            addView(getHttpImageView(data[i], i));
+        }
+    }
+
+    /**
+     * 获取一个HttpImageView
+     *
+     * @param url
+     * @return
+     */
+    public HttpImageView getHttpImageView(String url, final int position) {
+        HttpImageView img = new HttpImageView(getContext());
+        img.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        img.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        img.setImageUrl(url);
+        img.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), LookImageActivity.class);
+                intent.putExtra(IMAGE_NUM, position);
+                intent.putExtra(IMAGES_DATA, imagesData);
+                getContext().startActivity(intent);
+            }
+        });
+        return img;
     }
 
     /**
@@ -117,6 +171,7 @@ public class CellView extends FrameLayout {
     public void setImages(List<String> data) {
         String[] urls = (String[]) data.toArray();
         setImages(urls);
+        imagesData = urls;
     }
 
     /**
@@ -155,4 +210,30 @@ public class CellView extends FrameLayout {
         setImagesWithCompress((String[]) data.toArray(), inSimpleSize);
     }
 
+    /**
+     * 设置最后一个View
+     */
+    private void setEndView(View view) {
+        FrameLayout frameLayout = new FrameLayout(getContext());
+        frameLayout.setLayoutParams(new LayoutParams(childWidth, childWidth));
+        TextView textView = new TextView(getContext());
+        textView.setLayoutParams(new LayoutParams(childWidth, childWidth));
+        textView.setTextSize(28);
+        textView.setText("9 >");
+        textView.setTextColor(Color.parseColor("#ffffff"));
+        textView.setBackgroundColor(Color.parseColor("#33000000"));
+        textView.setGravity(Gravity.CENTER);
+        frameLayout.addView(view);
+        frameLayout.addView(textView);
+        addView(frameLayout);
+        frameLayout.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), LookImageActivity.class);
+                intent.putExtra(IMAGE_NUM, 8);
+                intent.putExtra(IMAGES_DATA, imagesData);
+                getContext().startActivity(intent);
+            }
+        });
+    }
 }
