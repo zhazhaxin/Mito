@@ -9,6 +9,6 @@
     </style>
 
     <style name="ToolbarTheme" parent="Theme.AppCompat">
-        <item name="android:background">#33000000</item>
+        <item name="android:background">@color/transparent</item>
     </style>
 </resources>

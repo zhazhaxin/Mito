@@ -114,7 +114,7 @@ public class CellView extends FrameLayout {
             for (int i = 0; i < 8; i++) {
                 addView(adapter.getView(this, i));
             }
-            setEndView(adapter.getView(this, 8));
+            setEndView(adapter.getView(this, 8), adapter.getCount());
         } else
             for (int i = 0; i < adapter.getCount(); i++) {
                 addView(adapter.getView(this, i));
@@ -133,7 +133,7 @@ public class CellView extends FrameLayout {
             for (int i = 0; i < 8; i++) {
                 addView(getHttpImageView(data[i], i));
             }
-            setEndView(getHttpImageView(data[8], 8));
+            setEndView(getHttpImageView(data[8], 8), data.length);
         }
         for (int i = 0; i < data.length; i++) {
             addView(getHttpImageView(data[i], i));
@@ -213,13 +213,13 @@ public class CellView extends FrameLayout {
     /**
      * 设置最后一个View
      */
-    private void setEndView(View view) {
+    private void setEndView(View view, int count) {
         FrameLayout frameLayout = new FrameLayout(getContext());
         frameLayout.setLayoutParams(new LayoutParams(childWidth, childWidth));
         TextView textView = new TextView(getContext());
         textView.setLayoutParams(new LayoutParams(childWidth, childWidth));
         textView.setTextSize(28);
-        textView.setText("9 >");
+        textView.setText(count - 9 + ">");
         textView.setTextColor(Color.parseColor("#ffffff"));
         textView.setBackgroundColor(Color.parseColor("#33000000"));
         textView.setGravity(Gravity.CENTER);

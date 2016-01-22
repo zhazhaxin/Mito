@@ -63,15 +63,14 @@ public class HttpRequestImage {
             requestImage(url, callBack);
             return;
         }
-        Log.i(TAG, "requestImageWithCompress");
-        if (loadImageFromMemory(url) != null) {
-            Log.i(TAG, "Get Picture from memoryCache");
-            callBack.success(loadImageFromMemory(url));
-        } else if (loadImageFromDisk(url) != null) {
-            Log.i(TAG, "Get Picture from diskCache");
-            callBack.success(loadImageFromDisk(url));
+        if (loadImageFromMemory(url + inSampleSize) != null) {
+            Log.i(TAG, "Compress Get Picture from memoryCache");
+            callBack.success(loadImageFromMemory(url + inSampleSize));
+        } else if (loadImageFromDisk(url + inSampleSize) != null) {
+            Log.i(TAG, "Compress Get Picture from diskCache");
+            callBack.success(loadImageFromDisk(url + inSampleSize));
         } else {
-            Log.i(TAG, "Get Picture from the network");
+            Log.i(TAG, "Compress Get Picture from the network");
             loadImageFromNetWithCompress(url, inSampleSize, callBack);
         }
     }
@@ -167,15 +166,14 @@ public class HttpRequestImage {
                     final InputStream inputStream = urlConnection.getInputStream();
                     respondCode = urlConnection.getResponseCode();
                     if (respondCode == HttpURLConnection.HTTP_OK) {
-                        final Bitmap fullBitmap = BitmapFactory.decodeStream(inputStream);
                         final Bitmap compressBitmap = ImageUtils.compressBitmapFromInputStream(inputStream, inSampleSize);
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
                                 callBack.success(compressBitmap);
-                                if (fullBitmap != null) {
-                                    MemoryCache.getInstance().putBitmapToCache(url, fullBitmap);
-                                    DiskCache.getInstance().writeImageToDisk(url, fullBitmap);
+                                if (compressBitmap != null) {
+                                    MemoryCache.getInstance().putBitmapToCache(url + inSampleSize, compressBitmap);
+                                    DiskCache.getInstance().writeImageToDisk(url + inSampleSize, compressBitmap);
                                 }
                             }
                         });

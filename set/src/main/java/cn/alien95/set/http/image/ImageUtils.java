@@ -28,7 +28,7 @@ public class ImageUtils {
     /**
      * 压缩Bitmap
      * @param bitmap
-     * @param size
+     * @param size 大小应该时KB为单位
      * @return
      */
     public static Bitmap compressBitmap(Bitmap bitmap, int size) {

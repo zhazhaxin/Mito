@@ -4,17 +4,23 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.alien95.alien95library.R;
 import cn.alien95.alien95library.bean.Image;
+import cn.alien95.alien95library.bean.ImageRespond;
+import cn.alien95.alien95library.model.ImageModel;
+import cn.alien95.set.http.request.HttpCallBack;
 import cn.alien95.set.recyclerview.BaseViewHolder;
 import cn.alien95.set.recyclerview.RecyclerAdapter;
 import cn.alien95.set.widget.HttpImageView;
@@ -33,14 +39,14 @@ public class RecyclerFragment extends Fragment {
         super.onCreate(savedInstanceState);
         images = new ArrayList<>();
         adapter = new MyAdapter(images);
-//        ImageModel.getImageForNet(1, new HttpCallBack() {
-//            @Override
-//            public void success(String info) {
-//                Gson gson = new Gson();
-//                ImageRespond respond = gson.fromJson(info, ImageRespond.class);
-//                adapter.addAll(respond.getTngou());
-//            }
-//        });
+        ImageModel.getImageForNet(1, new HttpCallBack() {
+            @Override
+            public void success(String info) {
+                Gson gson = new Gson();
+                ImageRespond respond = gson.fromJson(info, ImageRespond.class);
+                adapter.addAll(respond.getTngou());
+            }
+        });
     }
 
     @Nullable
@@ -49,8 +55,8 @@ public class RecyclerFragment extends Fragment {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_recycler, null);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-//        recyclerView.setAdapter(adapter);
-//        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
         return view;
 
     }

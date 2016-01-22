@@ -101,29 +101,43 @@ public class LookImageActivity extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home) {
             finish();
         } else if (item.getItemId() == R.id.save) {
-            saveBitmap(HttpRequestImage.getInstance().loadImageFromMemory(data[viewPager.getCurrentItem()]),
-                    data[viewPager.getCurrentItem()]);
+            String url = data[viewPager.getCurrentItem()];
+            if (HttpRequestImage.getInstance().loadImageFromMemory(url) != null) {
+                saveBitmap(HttpRequestImage.getInstance().loadImageFromMemory(url), url);
+            } else {
+                saveBitmap(HttpRequestImage.getInstance().loadImageFromDisk(url), url);
+            }
+
         }
         return true;
     }
 
 
-    public void saveBitmap(Bitmap bitmap, String picName) {
-        File f = new File(Utils.getCacheDir(), picName);
+    public void saveBitmap(final Bitmap bitmap, String picName) {
+        final File f = new File(Utils.getCacheDir(), Utils.MD5(picName) + ".jpg");
         if (f.exists()) {
-            f.delete();
+            Utils.Toast("文件已存在");
+            return;
         }
-        try {
-            FileOutputStream out = new FileOutputStream(f);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-            out.flush();
-            out.close();
-            Utils.Toast("已保存在APP的缓存目录");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    FileOutputStream out = new FileOutputStream(f);
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                    out.flush();
+                    out.close();
+                    Utils.Toast("已保存在APP的缓存目录");
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    Utils.Log("fuck:" + e.getMessage());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Utils.Log("fuck:" + e.getMessage());
+                }
+            }
+        }).start();
+
     }
 
 }
