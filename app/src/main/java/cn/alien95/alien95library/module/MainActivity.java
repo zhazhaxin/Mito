@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
         intent = new Intent(MainActivity.this, LookImageActivity.class);
 
-        ImageModel.getImageForNet("性感", 1, new HttpCallBack() {
+        ImageModel.getImageForNet("漂亮", 1, new HttpCallBack() {
             @Override
             public void success(String info) {
                 try {
