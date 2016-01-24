@@ -5,7 +5,6 @@ package cn.alien95.alien95library.config;
  */
 public class API{
 
-    public static final String imageHost = "http://tnfs.tngou.net/image";
-    public static final String getImage = "http://www.tngou.net/tnfs/api/news";
+    public static final String GET_IAMGES_BASEURL = "http://pic.sogou.com/pics?";
 }
 

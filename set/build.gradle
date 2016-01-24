@@ -34,7 +34,7 @@ dependencies {
     compile 'com.jakewharton:disklrucache:2.0.2'
     compile 'com.qiniu:qiniu-android-sdk:7.0.+'
     compile 'com.google.code.gson:gson:2.5'
-    compile 'cn.alien95:util:1.0.2'
+    compile 'cn.alien95:util:1.0.0'
 }
 
 ext {

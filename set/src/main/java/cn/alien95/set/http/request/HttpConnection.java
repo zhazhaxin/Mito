@@ -117,7 +117,7 @@ public class HttpConnection {
                     public void run() {
                         if (callback != null) {
                             callback.failure(finalRespondCode, info);
-                            callback.getRequestTimes(respondCode, info, DebugUtils.requestTimes - 1);
+                            callback.requestLog(respondCode, info, DebugUtils.requestTimes - 1);
                         }
                     }
                 });
@@ -130,7 +130,7 @@ public class HttpConnection {
                     public void run() {
                         if (callback != null) {
                             callback.success(result);
-                            callback.getRequestTimes(respondCode, result, DebugUtils.requestTimes - 1);
+                            callback.requestLog(respondCode, result, DebugUtils.requestTimes - 1);
                         }
                     }
                 });
@@ -143,7 +143,7 @@ public class HttpConnection {
                 public void run() {
                     if (callback != null) {
                         callback.error();
-                        callback.getRequestTimes("抛出异常：" + e1.getMessage(), DebugUtils.requestTimes - 1);
+                        callback.requestLog("抛出异常：" + e1.getMessage(), DebugUtils.requestTimes - 1);
                     }
                 }
             });

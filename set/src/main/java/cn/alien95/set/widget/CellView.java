@@ -12,7 +12,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 
 import alien95.cn.util.MessageNotify;
@@ -26,13 +28,11 @@ import cn.alien95.set.ui.LookImageActivity;
  */
 public class CellView extends FrameLayout {
 
-    public static final String IMAGES_DATA = "DATA";
-    public static final String IMAGE_NUM = "IMAGE_NUM";
     private static final String TAG = "CellView";
     private int spacing;
     private int childWidth;
     private Adapter adapter;
-    private String[] imagesData;
+    private List<String> imagesData;
 
     public CellView(Context context) {
         super(context);
@@ -128,16 +128,7 @@ public class CellView extends FrameLayout {
      * @param data 数据集合
      */
     public void setImages(String[] data) {
-        imagesData = data;
-        if (data.length > 9) {
-            for (int i = 0; i < 8; i++) {
-                addView(getHttpImageView(data[i], i));
-            }
-            setEndView(getHttpImageView(data[8], 8), data.length);
-        }
-        for (int i = 0; i < data.length; i++) {
-            addView(getHttpImageView(data[i], i));
-        }
+        setImages(Arrays.asList(data));
     }
 
     /**
@@ -155,8 +146,8 @@ public class CellView extends FrameLayout {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), LookImageActivity.class);
-                intent.putExtra(IMAGE_NUM, position);
-                intent.putExtra(IMAGES_DATA, imagesData);
+                intent.putExtra(LookImageActivity.IMAGE_NUM, position);
+                intent.putExtra(LookImageActivity.IMAGES_DATA_LIST, (Serializable) imagesData);
                 getContext().startActivity(intent);
             }
         });
@@ -169,9 +160,17 @@ public class CellView extends FrameLayout {
      * @param data
      */
     public void setImages(List<String> data) {
-        String[] urls = (String[]) data.toArray();
-        setImages(urls);
-        imagesData = urls;
+        setImages(data);
+        if (data.size() > 9) {
+            for (int i = 0; i < 8; i++) {
+                addView(getHttpImageView(data.get(i), i));
+            }
+            setEndView(getHttpImageView(data.get(8), 8), data.size());
+        }
+        for (int i = 0; i < data.size(); i++) {
+            addView(getHttpImageView(data.get(i), i));
+        }
+        imagesData = data;
     }
 
     /**
@@ -230,8 +229,8 @@ public class CellView extends FrameLayout {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), LookImageActivity.class);
-                intent.putExtra(IMAGE_NUM, 8);
-                intent.putExtra(IMAGES_DATA, imagesData);
+                intent.putExtra(LookImageActivity.IMAGE_NUM, 8);
+                intent.putExtra(LookImageActivity.IMAGES_DATA_LIST, (Serializable) imagesData);
                 getContext().startActivity(intent);
             }
         });

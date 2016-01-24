@@ -3,17 +3,21 @@ package cn.alien95.set.recyclerview;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by llxal on 2015/12/19.
  */
-public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter<BaseViewHolder<T>>{
+public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter<BaseViewHolder<T>> {
 
-    private List<T> data;
+    private List<T> data = new ArrayList<>();
 
-    public RecyclerAdapter(List<T> data){
+    public RecyclerAdapter() {
+    }
+
+    public RecyclerAdapter(List<T> data) {
         this.data = data;
     }
 
@@ -30,38 +34,43 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter<BaseViewHo
         return data.size();
     }
 
-    public void add(T object){
+    public void add(T object) {
         data.add(object);
         notifyDataSetChanged();
     }
 
-    public void insert(T object,int position){
-        data.add(position,object);
+    public void insert(T object, int position) {
+        data.add(position, object);
         notifyDataSetChanged();
     }
 
-    public void addAll(List<T> list){
+    public void addAll(List<T> list) {
         data.addAll(list);
         notifyDataSetChanged();
     }
 
-    public void addAll(T[] objects){
+    public void addAll(T[] objects) {
         data.addAll(Arrays.asList(objects));
         notifyDataSetChanged();
     }
 
-    public void replace(T object,int position){
-        data.set(position,object);
+    public void replace(T object, int position) {
+        data.set(position, object);
         notifyDataSetChanged();
     }
 
-    public void delete(T object){
+    public void delete(T object) {
         data.remove(object);
         notifyDataSetChanged();
     }
 
-    public void delete(int position){
+    public void delete(int position) {
         data.remove(position);
+        notifyDataSetChanged();
+    }
+
+    public void clear() {
+        data.clear();
         notifyDataSetChanged();
     }
 }

@@ -1,55 +1,35 @@
 package cn.alien95.alien95library.bean;
 
-import cn.alien95.alien95library.config.API;
-
 /**
  * Created by linlongxin on 2015/12/29.
  */
 public class Image {
 
-    private int id;
-    private int galleryclass;
-    private String img;
-    private long time;
-    private String title;
+    private String thumbUrl;
+    private String smallThumbUrl;
+    private String pic_url;
 
-    public int getId() {
-        return id;
+    public String getThumbUrl() {
+        return thumbUrl;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setThumbUrl(String thumbUrl) {
+        this.thumbUrl = thumbUrl;
     }
 
-    public int getGalleryclass() {
-        return galleryclass;
+    public String getSmallThumbUrl() {
+        return smallThumbUrl;
     }
 
-    public void setGalleryclass(int galleryclass) {
-        this.galleryclass = galleryclass;
+    public void setSmallThumbUrl(String smallThumbUrl) {
+        this.smallThumbUrl = smallThumbUrl;
     }
 
-    public String getImg() {
-        return API.imageHost + img;
+    public String getPic_url() {
+        return pic_url;
     }
 
-    public void setImg(String img) {
-        this.img = img;
-    }
-
-    public long getTime() {
-        return time;
-    }
-
-    public void setTime(long time) {
-        this.time = time;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
+    public void setPic_url(String pic_url) {
+        this.pic_url = pic_url;
     }
 }

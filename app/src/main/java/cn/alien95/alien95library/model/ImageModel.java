@@ -1,6 +1,7 @@
 package cn.alien95.alien95library.model;
 
-import java.util.HashMap;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import cn.alien95.alien95library.config.API;
 import cn.alien95.set.http.request.HttpCallBack;
@@ -11,9 +12,16 @@ import cn.alien95.set.http.request.HttpRequest;
  */
 public class ImageModel {
 
-    public static void getImageForNet(int id, HttpCallBack callBack) {
-        HashMap<String, String> params = new HashMap<>();
-        params.put("id", id + "");
-        HttpRequest.getInstance().post(API.getImage, params, callBack);
+
+    public static void getImageForNet(String word, int page, HttpCallBack callBack) {
+        try {
+            String readWord = URLEncoder.encode(word, "GBK");
+            String url = API.GET_IAMGES_BASEURL + "query=" + readWord + "&start=" + page * 20 + "&reqType=ajax&reqFrom=result";
+            HttpRequest.getInstance().get(url, callBack);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+
     }
 }
