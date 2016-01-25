@@ -1,1 +1,1 @@
-include ':app', ':set'
+include ':app', ':set', ':http'

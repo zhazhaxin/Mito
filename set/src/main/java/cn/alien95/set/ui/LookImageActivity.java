@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.List;
 
 import alien95.cn.http.image.HttpRequestImage;
+import alien95.cn.http.image.callback.DiskCallback;
 import alien95.cn.http.view.HttpImageView;
 import alien95.cn.util.Utils;
 import cn.alien95.set.R;
@@ -111,11 +112,16 @@ public class LookImageActivity extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home) {
             finish();
         } else if (item.getItemId() == R.id.save) {
-            String url = data.get(viewPager.getCurrentItem());
+            final String url = data.get(viewPager.getCurrentItem());
             if (HttpRequestImage.getInstance().loadImageFromMemory(url) != null) {
                 saveBitmap(HttpRequestImage.getInstance().loadImageFromMemory(url), url);
             } else {
-                saveBitmap(HttpRequestImage.getInstance().loadImageFromDisk(url), url);
+                HttpRequestImage.getInstance().loadImageFromDisk(url, new DiskCallback() {
+                    @Override
+                    public void callback(Bitmap bitmap) {
+                        saveBitmap(bitmap, url);
+                    }
+                });
             }
 
         }
