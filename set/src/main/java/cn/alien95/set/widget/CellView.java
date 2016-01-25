@@ -17,10 +17,11 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
+import alien95.cn.http.image.HttpRequestImage;
+import alien95.cn.http.image.ImageCallBack;
+import alien95.cn.http.view.HttpImageView;
 import alien95.cn.util.MessageNotify;
 import alien95.cn.util.Utils;
-import cn.alien95.set.http.image.HttpRequestImage;
-import cn.alien95.set.http.image.ImageCallBack;
 import cn.alien95.set.ui.LookImageActivity;
 
 /**

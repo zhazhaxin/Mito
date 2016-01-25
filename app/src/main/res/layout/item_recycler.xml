@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<cn.alien95.set.widget.HttpImageView xmlns:android="http://schemas.android.com/apk/res/android"
+<alien95.cn.http.view.HttpImageView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/http_image_view"
     android:layout_width="match_parent"

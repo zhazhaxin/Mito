@@ -2,10 +2,9 @@ package cn.alien95.alien95library.app;
 
 import android.app.Application;
 
-
+import alien95.cn.http.request.HttpRequest;
 import alien95.cn.util.Utils;
 import cn.alien95.alien95library.BuildConfig;
-import cn.alien95.set.http.request.HttpRequest;
 
 /**
  * Created by linlongxin on 2015/12/28.

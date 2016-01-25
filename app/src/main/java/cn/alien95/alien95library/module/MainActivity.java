@@ -23,13 +23,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import alien95.cn.http.request.HttpCallBack;
+import alien95.cn.http.view.HttpImageView;
+import alien95.cn.util.Utils;
 import cn.alien95.alien95library.R;
 import cn.alien95.alien95library.model.ImageModel;
-import cn.alien95.set.http.request.HttpCallBack;
 import cn.alien95.set.recyclerview.BaseViewHolder;
 import cn.alien95.set.recyclerview.RecyclerAdapter;
 import cn.alien95.set.ui.LookImageActivity;
-import cn.alien95.set.widget.HttpImageView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
         intent = new Intent(MainActivity.this, LookImageActivity.class);
 
-        ImageModel.getImageForNet("漂亮", 1, new HttpCallBack() {
+        ImageModel.getImageForNet("风景", 1, new HttpCallBack() {
             @Override
             public void success(String info) {
                 try {
@@ -126,6 +127,10 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             JSONObject jsonObject = new JSONObject(info);
                             JSONArray jsonArray = jsonObject.getJSONArray("items");
+                            if (jsonArray.length() == 0) {
+                                Utils.Toast("我好方，搜不到你想要的图片");
+                                return;
+                            }
                             data.clear();
                             picUrlData.clear();
                             for (int i = 0; i < jsonArray.length(); i++) {

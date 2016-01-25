@@ -23,10 +23,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import alien95.cn.http.image.HttpRequestImage;
+import alien95.cn.http.view.HttpImageView;
 import alien95.cn.util.Utils;
 import cn.alien95.set.R;
-import cn.alien95.set.http.image.HttpRequestImage;
-import cn.alien95.set.widget.HttpImageView;
 
 /**
  * Created by linlongxin on 2016/1/22.

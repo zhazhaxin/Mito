@@ -31,10 +31,8 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:recyclerview-v7:23.1.1'
-    compile 'com.jakewharton:disklrucache:2.0.2'
-    compile 'com.qiniu:qiniu-android-sdk:7.0.+'
     compile 'com.google.code.gson:gson:2.5'
-    compile 'cn.alien95:util:1.0.0'
+    compile 'cn.alien95:http:1.0.4'
 }
 
 ext {
