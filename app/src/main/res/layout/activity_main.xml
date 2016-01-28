@@ -14,8 +14,8 @@
         android:background="@color/colorPrimary"
         app:theme="@style/Theme.AppCompat"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <alien95.cn.refreshrecyclerview.view.RefreshRecyclerView
+        android:id="@+id/refresh_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

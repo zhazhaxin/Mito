@@ -77,6 +77,7 @@ public class LookImageActivity extends AppCompatActivity {
             img.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             img.setScaleType(ImageView.ScaleType.CENTER_CROP);
             img.setAdjustViewBounds(true);
+            img.setLoadImageId(R.drawable.bg_load);
             img.setImageUrl(data.get(position));
             container.addView(img);
             return img;

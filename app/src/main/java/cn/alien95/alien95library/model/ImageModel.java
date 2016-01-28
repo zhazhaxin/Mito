@@ -3,8 +3,8 @@ package cn.alien95.alien95library.model;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import alien95.cn.http.request.HttpCallBack;
 import alien95.cn.http.request.HttpRequest;
+import alien95.cn.http.request.callback.HttpCallBack;
 import cn.alien95.alien95library.config.API;
 
 /**

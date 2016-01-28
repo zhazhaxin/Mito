@@ -14,7 +14,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import alien95.cn.http.image.callback.DiskCallback;
-import alien95.cn.util.Utils;
+import alien95.cn.http.request.HttpQueue;
+import alien95.cn.http.util.Utils;
 
 /**
  * Created by linlongxin on 2015/12/29.
@@ -88,33 +89,36 @@ public class DiskCache {
      * 读取硬盘缓存
      *
      * @param imageUrl 图片地址
-     * @return
      */
     public void readImageFromDisk(String imageUrl, final DiskCallback callback) {
         final String key = Utils.MD5(imageUrl);
-        try {
-            DiskLruCache.Snapshot snapShot = diskLruCache.get(key);
-            if (snapShot != null) {
-                InputStream is = snapShot.getInputStream(0);
-                final Bitmap bitmap = BitmapFactory.decodeStream(is);
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.callback(bitmap);
+        HttpQueue.getInstance().addQuest(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    DiskLruCache.Snapshot snapShot = diskLruCache.get(key);
+                    if (snapShot != null) {
+                        InputStream is = snapShot.getInputStream(0);
+                        final Bitmap bitmap = BitmapFactory.decodeStream(is);
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.callback(bitmap);
+                            }
+                        });
+                    } else {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.callback(null);
+                            }
+                        });
                     }
-                });
-            } else {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.callback(null);
-                    }
-                });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        });
     }
 
     /**

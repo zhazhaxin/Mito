@@ -22,5 +22,8 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':set')
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'cn.alien95:refreshrecyclerview:0.1.3'
+    compile 'cn.alien95:cellview:0.1.3'
+    compile project(':http')
 }

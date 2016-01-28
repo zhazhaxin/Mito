@@ -29,6 +29,11 @@ public class HttpRequestImage {
         handler = new Handler();
     }
 
+    /**
+     * 获取一个HttpRequestImage实例，这里是单例模式
+     *
+     * @return
+     */
     public static HttpRequestImage getInstance() {
         if (instance == null) {
             synchronized (HttpRequestImage.class) {
@@ -40,6 +45,12 @@ public class HttpRequestImage {
         return instance;
     }
 
+    /**
+     * 从网络请求图片
+     *
+     * @param url      图片的网络地址
+     * @param callBack 回调接口
+     */
     public void requestImage(final String url, final ImageCallBack callBack) {
         if (loadImageFromMemory(url) != null) {
             Log.i(TAG, "Get Picture from memoryCache");
@@ -65,6 +76,7 @@ public class HttpRequestImage {
      * 图片压缩处理的时候内存缓存和硬盘缓存的key是通过url+inSampleSize 通过MD5加密的
      *
      * @param url
+     * @param inSampleSize
      * @param callBack
      */
     public synchronized void requestImageWithCompress(final String url, final int inSampleSize, final ImageCallBack callBack) {
@@ -106,13 +118,13 @@ public class HttpRequestImage {
      * 从硬盘缓存中读取图片
      *
      * @param imageUrl
-     * @return
+     * @param callback
      */
     public void loadImageFromDisk(String imageUrl, DiskCallback callback) {
         DiskCache.getInstance().readImageFromDisk(imageUrl, callback);
     }
 
-    public HttpURLConnection getHttpUrlConnection(String url) {
+    public synchronized HttpURLConnection getHttpUrlConnection(String url) {
         DebugUtils.requestImageLog(url);
         HttpURLConnection urlConnection = null;
         try {
