@@ -4,11 +4,13 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +21,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +36,9 @@ import alien95.cn.refreshrecyclerview.view.BaseViewHolder;
 import alien95.cn.refreshrecyclerview.view.RefreshRecyclerView;
 import cn.alien95.alien95library.R;
 import cn.alien95.alien95library.model.ImageModel;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private Intent intent;
     private String searchWord = "风景";
     private int pager = 1;
+    private Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,40 +87,58 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void getData(String searchWord, final int pagerNum, final boolean isRefresh) {
-        ImageModel.getImageForNet(searchWord, pagerNum, new HttpCallBack() {
-            @Override
-            public void success(String info) {
-                try {
-                    JSONObject jsonObject = new JSONObject(info);
-                    JSONArray jsonArray = jsonObject.getJSONArray("items");
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        data.add((String) jsonArray.getJSONObject(i).get("thumbUrl"));
-                        picUrlData.add((String) jsonArray.getJSONObject(i).get("pic_url"));
-                    }
-                    intent.putExtra(LookImageActivity.IMAGES_DATA_LIST, (Serializable) picUrlData);
-                    if (isRefresh) {
-                        adapter.clear();
-                        pager = 0;
-                    } else {
-                        pager++;
-                    }
-                    adapter.addAll(data);
-                    refreshRecyclerView.dismissRefresh();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+    public void getData(final String searchWord, final int pagerNum, final boolean isRefresh) {
+        try {
+            ImageModel.getDataFromOkHttp(searchWord, pagerNum, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
 
-            @Override
-            public void failure(int status, String info) {
-                super.failure(status, info);
-                if (status != 999) {
-                    Toast.makeText(MainActivity.this, "网络错误", Toast.LENGTH_SHORT).show();
                 }
-                refreshRecyclerView.dismissRefresh();
-            }
-        });
+
+                @Override
+                public void onResponse(Call call, final Response response) throws IOException {
+                    final String resultInfo = response.body().string();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (response.isSuccessful()) {
+                                try {
+                                    Log.i("fuck", "resultInfo:" + resultInfo);
+                                    JSONObject jsonObject = new JSONObject(resultInfo);
+                                    JSONArray jsonArray = jsonObject.getJSONArray("items");
+                                    for (int i = 0; i < jsonArray.length(); i++) {
+                                        data.add((String) jsonArray.getJSONObject(i).get("thumbUrl"));
+                                        picUrlData.add((String) jsonArray.getJSONObject(i).get("pic_url"));
+                                    }
+                                    intent.putExtra(LookImageActivity.IMAGES_DATA_LIST, (Serializable) picUrlData);
+                                    if (isRefresh) {
+                                        adapter.clear();
+                                        pager = 0;
+                                    } else {
+                                        pager++;
+                                    }
+                                    Log.i("fuck", "thread-name:" + Thread.currentThread().getName());
+                                    adapter.addAll(data);
+                                    refreshRecyclerView.dismissRefresh();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    Log.i("fuck", "getData:" + e.getMessage());
+                                }
+
+                            } else {
+                                Toast.makeText(MainActivity.this, "网络错误", Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    });
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.i("fuck", "getData-IOException:" + e.getMessage());
+        }
+
     }
 
     class MyAdapter extends RecyclerAdapter<String> {
@@ -149,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         }
+
     }
 
     @Override
