@@ -10,35 +10,31 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.bumptech.glide.Glide;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import alien95.cn.cellview.ui.LookImageActivity;
-import alien95.cn.http.request.callback.HttpCallBack;
-import alien95.cn.http.util.Utils;
-import alien95.cn.http.view.HttpImageView;
 import alien95.cn.refreshrecyclerview.adapter.RecyclerAdapter;
 import alien95.cn.refreshrecyclerview.callback.Action;
 import alien95.cn.refreshrecyclerview.view.BaseViewHolder;
 import alien95.cn.refreshrecyclerview.view.RefreshRecyclerView;
 import cn.alien95.alien95library.R;
+import cn.alien95.alien95library.model.APIService;
 import cn.alien95.alien95library.model.ImageModel;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
+import cn.alien95.alien95library.model.bean.Image;
+import cn.alien95.alien95library.model.bean.ImageRespond;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -88,94 +84,30 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void getData(final String searchWord, final int pagerNum, final boolean isRefresh) {
-        try {
-            ImageModel.getDataFromOkHttp(searchWord, pagerNum, new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-
+        ImageModel.getImageForNet().getImagesInfo(searchWord, pagerNum * 20).enqueue(new Callback<ImageRespond>() {
+            @Override
+            public void onResponse(Response<ImageRespond> response) {
+                if(isRefresh){
+                    data.clear();
+                    picUrlData.clear();
+                    adapter.clear();
                 }
-
-                @Override
-                public void onResponse(Call call, final Response response) throws IOException {
-                    final String resultInfo = response.body().string();
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (response.isSuccessful()) {
-                                try {
-                                    Log.i("fuck", "resultInfo:" + resultInfo);
-                                    JSONObject jsonObject = new JSONObject(resultInfo);
-                                    JSONArray jsonArray = jsonObject.getJSONArray("items");
-                                    for (int i = 0; i < jsonArray.length(); i++) {
-                                        data.add((String) jsonArray.getJSONObject(i).get("thumbUrl"));
-                                        picUrlData.add((String) jsonArray.getJSONObject(i).get("pic_url"));
-                                    }
-                                    intent.putExtra(LookImageActivity.IMAGES_DATA_LIST, (Serializable) picUrlData);
-                                    if (isRefresh) {
-                                        adapter.clear();
-                                        pager = 0;
-                                    } else {
-                                        pager++;
-                                    }
-                                    Log.i("fuck", "thread-name:" + Thread.currentThread().getName());
-                                    adapter.addAll(data);
-                                    refreshRecyclerView.dismissRefresh();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                    Log.i("fuck", "getData:" + e.getMessage());
-                                }
-
-                            } else {
-                                Toast.makeText(MainActivity.this, "网络错误", Toast.LENGTH_SHORT).show();
-                            }
-
-                        }
-                    });
+                Image[] images = response.body().getItems();
+                for (Image image : images) {
+                    data.add(image.getThumbUrl());
+                    picUrlData.add(image.getPic_url());
                 }
-            });
+                adapter.addAll(data);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.i("fuck", "getData-IOException:" + e.getMessage());
-        }
-
-    }
-
-    class MyAdapter extends RecyclerAdapter<String> {
-
-        public MyAdapter(Context context) {
-            super(context);
-        }
-
-        @Override
-        public BaseViewHolder<String> onCreateBaseViewHolder(ViewGroup parent, int viewType) {
-            return new MyViewHolder(parent.getContext(), R.layout.item_recycler);
-        }
-
-        class MyViewHolder extends BaseViewHolder<String> {
-
-            private HttpImageView imageView;
-
-            public MyViewHolder(Context context, int layoutId) {
-                super(context, layoutId);
-                imageView = (HttpImageView) itemView.findViewById(R.id.http_image_view);
             }
 
             @Override
-            public void setData(final String object) {
-                super.setData(object);
-                imageView.setImageUrl(object);
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        intent.putExtra(LookImageActivity.IMAGE_NUM, data.indexOf(object));
-                        startActivity(intent);
-                    }
-                });
-            }
-        }
+            public void onFailure(Throwable t) {
 
+            }
+        });
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -190,33 +122,32 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                searchWord = query;
-                ImageModel.getImageForNet(query, 1, new HttpCallBack() {
+                APIService service = ImageModel.getImageForNet();
+                service.getImagesInfo(query, pager++).enqueue(new retrofit2.Callback<ImageRespond>() {
                     @Override
-                    public void success(String info) {
-                        try {
-                            JSONObject jsonObject = new JSONObject(info);
-                            JSONArray jsonArray = jsonObject.getJSONArray("items");
-                            if (jsonArray.length() == 0) {
-                                Utils.Toast("我好方，搜不到你想要的图片");
-                                return;
-                            }
+                    public void onResponse(retrofit2.Response<ImageRespond> response) {
+                        if (response.isSuccess()) {
+
                             data.clear();
                             picUrlData.clear();
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                data.add((String) jsonArray.getJSONObject(i).get("thumbUrl"));
-                                picUrlData.add((String) jsonArray.getJSONObject(i).get("pic_url"));
+
+                            Image[] images = response.body().getItems();
+                            for (Image image : images) {
+                                data.add(image.getThumbUrl());
+                                picUrlData.add(image.getPic_url());
                             }
                             adapter.clear();
                             adapter.addAll(data);
                             intent.putExtra(LookImageActivity.IMAGES_DATA_LIST, (Serializable) picUrlData);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
+                    }
+
+                    @Override
+                    public void onFailure(Throwable t) {
 
                     }
                 });
-                return false;
+                return true;
             }
 
             @Override
@@ -224,6 +155,53 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
         return true;
+    }
+
+
+    /**
+     * adapter
+     */
+    class MyAdapter extends RecyclerAdapter<String> {
+
+        public MyAdapter(Context context) {
+            super(context);
+        }
+
+        @Override
+        public BaseViewHolder<String> onCreateBaseViewHolder(ViewGroup parent, int viewType) {
+            ImageView imageView = new ImageView(MainActivity.this);
+            imageView.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            imageView.setAdjustViewBounds(true);
+            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            return new MyViewHolder(imageView);
+        }
+
+        class MyViewHolder extends BaseViewHolder<String> {
+
+            public MyViewHolder(View itemView) {
+                super(itemView);
+
+            }
+
+            @Override
+            public void setData(final String object) {
+                super.setData(object);
+                Glide.with(MainActivity.this)
+                        .load(object)
+                        .error(R.drawable.pc_load)
+                        .placeholder(R.drawable.pc_load)
+                        .into((ImageView) itemView);
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        intent.putExtra(LookImageActivity.IMAGE_NUM, data.indexOf(object));
+                        startActivity(intent);
+                    }
+                });
+            }
+        }
+
     }
 }
