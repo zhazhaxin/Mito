@@ -23,13 +23,8 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:23.1.1'
-
     compile 'cn.alien95:refreshrecyclerview:0.1.4'
     compile 'cn.alien95:cellview:0.1.5'
-
-    compile 'com.squareup.okhttp3:okhttp:3.0.1'
-    compile 'com.squareup.retrofit2:retrofit:2.0.0-beta3'
-    compile 'com.squareup.retrofit2:converter-gson:2.0.0-beta3'
-    compile 'io.reactivex:rxandroid:1.1.0'
-    compile 'io.reactivex:rxjava:1.1.0'
+    compile 'cn.alien95:http:1.1.4'
+    compile 'com.google.code.gson:gson:2.5'
 }

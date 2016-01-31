@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cn.alien95.alien95library">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".app.App"
         android:allowBackup="true"
@@ -25,7 +27,7 @@
                 android:resource="@xml/searchable" />
         </activity>
 
-        <activity android:name="alien95.cn.cellview.ui.LookImageActivity"/>
+        <activity android:name="alien95.cn.cellview.ui.LookImageActivity" />
 
     </application>
 

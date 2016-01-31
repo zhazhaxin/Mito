@@ -4,7 +4,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -18,23 +17,21 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import alien95.cn.cellview.ui.LookImageActivity;
+import alien95.cn.http.request.callback.HttpCallBack;
 import alien95.cn.refreshrecyclerview.adapter.RecyclerAdapter;
 import alien95.cn.refreshrecyclerview.callback.Action;
 import alien95.cn.refreshrecyclerview.view.BaseViewHolder;
 import alien95.cn.refreshrecyclerview.view.RefreshRecyclerView;
 import cn.alien95.alien95library.R;
-import cn.alien95.alien95library.model.APIService;
 import cn.alien95.alien95library.model.ImageModel;
 import cn.alien95.alien95library.model.bean.Image;
 import cn.alien95.alien95library.model.bean.ImageRespond;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,11 +39,10 @@ public class MainActivity extends AppCompatActivity {
     private RefreshRecyclerView refreshRecyclerView;
     private MyAdapter adapter;
     private List<String> data = new ArrayList<>();
-    private List<String> picUrlData = new ArrayList<>();
+    private ArrayList<String> picUrlData = new ArrayList<>();
     private Intent intent;
     private String searchWord = "风景";
     private int pager = 1;
-    private Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,26 +80,22 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void getData(final String searchWord, final int pagerNum, final boolean isRefresh) {
-        ImageModel.getImageForNet().getImagesInfo(searchWord, pagerNum * 20).enqueue(new Callback<ImageRespond>() {
+        ImageModel.getDataFromNet(searchWord, pagerNum, new HttpCallBack() {
             @Override
-            public void onResponse(Response<ImageRespond> response) {
-                if(isRefresh){
+            public void success(String info) {
+                Gson gson = new Gson();
+                ImageRespond respond = gson.fromJson(info, ImageRespond.class);
+                Image[] images = respond.getItems();
+                if (isRefresh) {
                     data.clear();
-                    picUrlData.clear();
                     adapter.clear();
+                    picUrlData.clear();
                 }
-                Image[] images = response.body().getItems();
                 for (Image image : images) {
                     data.add(image.getThumbUrl());
                     picUrlData.add(image.getPic_url());
                 }
                 adapter.addAll(data);
-
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-
             }
         });
     }
@@ -122,31 +114,24 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                APIService service = ImageModel.getImageForNet();
-                service.getImagesInfo(query, pager++).enqueue(new retrofit2.Callback<ImageRespond>() {
+
+                ImageModel.getDataFromNet(query, 0, new HttpCallBack() {
                     @Override
-                    public void onResponse(retrofit2.Response<ImageRespond> response) {
-                        if (response.isSuccess()) {
-
-                            data.clear();
-                            picUrlData.clear();
-
-                            Image[] images = response.body().getItems();
-                            for (Image image : images) {
-                                data.add(image.getThumbUrl());
-                                picUrlData.add(image.getPic_url());
-                            }
-                            adapter.clear();
-                            adapter.addAll(data);
-                            intent.putExtra(LookImageActivity.IMAGES_DATA_LIST, (Serializable) picUrlData);
+                    public void success(String info) {
+                        Gson gson = new Gson();
+                        ImageRespond respond = gson.fromJson(info, ImageRespond.class);
+                        Image[] images = respond.getItems();
+                        data.clear();
+                        adapter.clear();
+                        picUrlData.clear();
+                        for (Image image : images) {
+                            data.add(image.getThumbUrl());
+                            picUrlData.add(image.getPic_url());
                         }
-                    }
-
-                    @Override
-                    public void onFailure(Throwable t) {
-
+                        adapter.addAll(data);
                     }
                 });
+
                 return true;
             }
 
@@ -197,6 +182,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         intent.putExtra(LookImageActivity.IMAGE_NUM, data.indexOf(object));
+                        intent.putStringArrayListExtra(LookImageActivity.IMAGES_DATA_LIST,picUrlData);
+                        intent.putExtra(LookImageActivity.IMAGES_DATA_LIST,picUrlData);
                         startActivity(intent);
                     }
                 });
