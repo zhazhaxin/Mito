@@ -15,15 +15,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import alien95.cn.cellview.ui.LookImageActivity;
-import alien95.cn.http.request.callback.HttpCallBack;
 import alien95.cn.refreshrecyclerview.adapter.RecyclerAdapter;
 import alien95.cn.refreshrecyclerview.callback.Action;
 import alien95.cn.refreshrecyclerview.view.BaseViewHolder;
@@ -32,6 +31,8 @@ import cn.alien95.alien95library.R;
 import cn.alien95.alien95library.model.ImageModel;
 import cn.alien95.alien95library.model.bean.Image;
 import cn.alien95.alien95library.model.bean.ImageRespond;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> picUrlData = new ArrayList<>();
     private Intent intent;
     private String searchWord = "风景";
-    private int pager = 1;
+    private int pager = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,12 +61,12 @@ public class MainActivity extends AppCompatActivity {
 
         intent = new Intent(MainActivity.this, LookImageActivity.class);
 
-        getData("风景", 1, false);
+        getData("风景", 0, false);
 
         refreshRecyclerView.refresh(new Action() {
             @Override
             public void onAction() {
-                getData(searchWord, 1, true);
+                getData(searchWord, 0, true);
             }
         });
 
@@ -80,24 +81,36 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void getData(final String searchWord, final int pagerNum, final boolean isRefresh) {
-        ImageModel.getDataFromNet(searchWord, pagerNum, new HttpCallBack() {
+
+        ImageModel.getImagesFromNet(searchWord, pagerNum, new Callback<ImageRespond>() {
             @Override
-            public void success(String info) {
-                Gson gson = new Gson();
-                ImageRespond respond = gson.fromJson(info, ImageRespond.class);
-                Image[] images = respond.getItems();
-                if (isRefresh) {
-                    data.clear();
-                    adapter.clear();
-                    picUrlData.clear();
+            public void onResponse(Response<ImageRespond> response) {
+                if (response.isSuccess()) {
+                    Image[] images = response.body().getItems();
+                    if (isRefresh) {
+                        data.clear();
+                        adapter.clear();
+                        picUrlData.clear();
+                        pager = 0;
+                    } else {
+                        pager++;
+                    }
+                    for (Image image : images) {
+                        data.add(image.getThumbUrl());
+                        picUrlData.add(image.getPic_url());
+                    }
+                    adapter.addAll(data);
+                } else {
+                    Toast.makeText(MainActivity.this, "网络错误", Toast.LENGTH_SHORT).show();
                 }
-                for (Image image : images) {
-                    data.add(image.getThumbUrl());
-                    picUrlData.add(image.getPic_url());
-                }
-                adapter.addAll(data);
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+
             }
         });
+
     }
 
 
@@ -115,12 +128,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
 
-                ImageModel.getDataFromNet(query, 0, new HttpCallBack() {
+                ImageModel.getImagesFromNet(query, 1, new Callback<ImageRespond>() {
                     @Override
-                    public void success(String info) {
-                        Gson gson = new Gson();
-                        ImageRespond respond = gson.fromJson(info, ImageRespond.class);
-                        Image[] images = respond.getItems();
+                    public void onResponse(Response<ImageRespond> response) {
+                        Image[] images = response.body().getItems();
                         data.clear();
                         adapter.clear();
                         picUrlData.clear();
@@ -130,8 +141,12 @@ public class MainActivity extends AppCompatActivity {
                         }
                         adapter.addAll(data);
                     }
-                });
 
+                    @Override
+                    public void onFailure(Throwable t) {
+                        Toast.makeText(MainActivity.this, "网络错误", Toast.LENGTH_SHORT).show();
+                    }
+                });
                 return true;
             }
 
@@ -140,7 +155,6 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
         return true;
     }
 
@@ -167,7 +181,6 @@ public class MainActivity extends AppCompatActivity {
 
             public MyViewHolder(View itemView) {
                 super(itemView);
-
             }
 
             @Override
@@ -182,8 +195,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         intent.putExtra(LookImageActivity.IMAGE_NUM, data.indexOf(object));
-                        intent.putStringArrayListExtra(LookImageActivity.IMAGES_DATA_LIST,picUrlData);
-                        intent.putExtra(LookImageActivity.IMAGES_DATA_LIST,picUrlData);
+                        intent.putStringArrayListExtra(LookImageActivity.IMAGES_DATA_LIST, picUrlData);
+                        intent.putExtra(LookImageActivity.IMAGES_DATA_LIST, picUrlData);
                         startActivity(intent);
                     }
                 });
