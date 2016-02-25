@@ -31,8 +31,7 @@ import cn.alien95.alien95library.R;
 import cn.alien95.alien95library.model.ImageModel;
 import cn.alien95.alien95library.model.bean.Image;
 import cn.alien95.alien95library.model.bean.ImageRespond;
-import retrofit2.Callback;
-import retrofit2.Response;
+import rx.Observer;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        ImageModel.RX();
 
         adapter = new MyAdapter(this);
         refreshRecyclerView = (RefreshRecyclerView) findViewById(R.id.refresh_recycler_view);
@@ -82,37 +83,36 @@ public class MainActivity extends AppCompatActivity {
 
     public void getData(final String searchWord, final int pagerNum, final boolean isRefresh) {
 
-        ImageModel.getImagesFromNet(searchWord, pagerNum, new Callback<ImageRespond>() {
+        ImageModel.getImagesFromNet(searchWord, pagerNum, new Observer<ImageRespond>() {
             @Override
-            public void onResponse(Response<ImageRespond> response) {
-                if (response.isSuccess()) {
-                    Image[] images = response.body().getItems();
-                    if (isRefresh) {
-                        data.clear();
-                        adapter.clear();
-                        picUrlData.clear();
-                        pager = 0;
-                    } else {
-                        pager++;
-                    }
-                    for (Image image : images) {
-                        data.add(image.getThumbUrl());
-                        picUrlData.add(image.getPic_url());
-                    }
-                    adapter.addAll(data);
-                } else {
-                    Toast.makeText(MainActivity.this, "网络错误", Toast.LENGTH_SHORT).show();
-                }
+            public void onCompleted() {
+
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onError(Throwable e) {
+                Toast.makeText(MainActivity.this, "网络错误", Toast.LENGTH_SHORT).show();
+            }
 
+            @Override
+            public void onNext(ImageRespond imageRespond) {
+                Image[] images = imageRespond.getItems();
+                if (isRefresh) {
+                    data.clear();
+                    adapter.clear();
+                    picUrlData.clear();
+                    pager = 0;
+                } else {
+                    pager++;
+                }
+                for (Image image : images) {
+                    data.add(image.getThumbUrl());
+                    picUrlData.add(image.getPic_url());
+                }
+                adapter.addAll(data);
             }
         });
-
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -128,10 +128,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
 
-                ImageModel.getImagesFromNet(query, 1, new Callback<ImageRespond>() {
+                ImageModel.getImagesFromNet(query, 1, new Observer<ImageRespond>() {
                     @Override
-                    public void onResponse(Response<ImageRespond> response) {
-                        Image[] images = response.body().getItems();
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(MainActivity.this, "网络错误", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(ImageRespond imageRespond) {
+                        Image[] images = imageRespond.getItems();
                         data.clear();
                         adapter.clear();
                         picUrlData.clear();
@@ -141,12 +151,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                         adapter.addAll(data);
                     }
-
-                    @Override
-                    public void onFailure(Throwable t) {
-                        Toast.makeText(MainActivity.this, "网络错误", Toast.LENGTH_SHORT).show();
-                    }
                 });
+
                 return true;
             }
 
@@ -155,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
         return true;
     }
 
@@ -204,4 +211,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
 }

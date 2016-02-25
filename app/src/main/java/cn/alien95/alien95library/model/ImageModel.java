@@ -2,9 +2,13 @@ package cn.alien95.alien95library.model;
 
 import cn.alien95.alien95library.config.API;
 import cn.alien95.alien95library.model.bean.ImageRespond;
-import retrofit2.Callback;
 import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by linlongxin on 2015/12/29.
@@ -13,12 +17,23 @@ public class ImageModel {
 
     private static Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(API.GET_IAMGES_BASEURL)
+            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 
-    public static void getImagesFromNet(String query, int page, Callback<ImageRespond> callback) {
-        APIService service = retrofit.create(APIService.class);
-        service.getImageRespond(query, page, "ajax", "result").enqueue(callback);
+    private static APIService service = retrofit.create(APIService.class);
+
+    public static void getImagesFromNet(String query, int page, Observer<ImageRespond> observer) {
+        service.getImageRespond(query, page, "ajax", "result")
+                .doOnNext(new Action1<ImageRespond>() {
+                    @Override
+                    public void call(ImageRespond imageRespond) {
+
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())  //事件消费在主线程
+                .subscribe(observer);
     }
 
 }
