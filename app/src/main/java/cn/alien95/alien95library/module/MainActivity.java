@@ -9,13 +9,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -48,11 +48,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Log.i("fuck","MainActivity--onCreate");
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        ImageModel.RX();
 
         adapter = new MyAdapter(this);
         refreshRecyclerView = (RefreshRecyclerView) findViewById(R.id.refresh_recycler_view);
@@ -91,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onError(Throwable e) {
-                Toast.makeText(MainActivity.this, "网络错误", Toast.LENGTH_SHORT).show();
+
             }
 
             @Override
@@ -136,7 +134,6 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(Throwable e) {
-                        Toast.makeText(MainActivity.this, "网络错误", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
