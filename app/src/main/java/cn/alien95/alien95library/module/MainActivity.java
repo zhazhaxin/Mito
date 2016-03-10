@@ -1,5 +1,9 @@
 package cn.alien95.alien95library.module;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -9,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +30,7 @@ import alien95.cn.refreshrecyclerview.adapter.RecyclerAdapter;
 import alien95.cn.refreshrecyclerview.callback.Action;
 import alien95.cn.refreshrecyclerview.view.BaseViewHolder;
 import alien95.cn.refreshrecyclerview.view.RefreshRecyclerView;
+import alien95.cn.util.Utils;
 import cn.alien95.alien95library.R;
 import cn.alien95.alien95library.model.ImageModel;
 import cn.alien95.alien95library.model.bean.Image;
@@ -48,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.i("fuck","MainActivity--onCreate");
+
+        Utils.Toast("fuck");
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -190,11 +195,48 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void setData(final String object) {
                 super.setData(object);
+
                 Glide.with(MainActivity.this)
                         .load(object)
                         .error(R.drawable.pc_load)
                         .placeholder(R.drawable.pc_load)
                         .into((ImageView) itemView);
+
+                ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(itemView,"alpha",0,1);
+                ObjectAnimator objectAnimator2 = ObjectAnimator.ofFloat(itemView,"rotation",0,180);
+                objectAnimator1.setDuration(2000);
+                objectAnimator2.setDuration(1500);
+                objectAnimator1.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        super.onAnimationStart(animation);
+                    }
+                });
+                AnimatorSet animatorSet = new AnimatorSet();
+                animatorSet.play(objectAnimator1);
+//                animatorSet.play(objectAnimator2);
+                animatorSet.start();
+                animatorSet.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

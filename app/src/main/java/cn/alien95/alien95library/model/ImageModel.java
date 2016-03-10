@@ -36,14 +36,14 @@ public class ImageModel {
     public static void getImagesFromNet(String query, int page, Observer<ImageRespond> observer) {
 
         service.getImageRespond(query, page, "ajax", "result")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())  //事件消费在主线程
                 .doOnNext(new Action1<ImageRespond>() {
                     @Override
                     public void call(ImageRespond imageRespond) {
-
+                          //要写在主线程
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())  //事件消费在主线程
                 .subscribe(observer);
     }
 
