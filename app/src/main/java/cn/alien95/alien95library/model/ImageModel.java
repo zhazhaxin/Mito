@@ -1,6 +1,7 @@
 package cn.alien95.alien95library.model;
 
 import cn.alien95.alien95library.config.API;
+import cn.alien95.alien95library.model.bean.Image;
 import cn.alien95.alien95library.model.bean.ImageRespond;
 import cn.alien95.alien95library.util.LoggingInterceptor;
 import okhttp3.OkHttpClient;
@@ -8,9 +9,8 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -33,18 +33,16 @@ public class ImageModel {
 
     private static APIService service = retrofit.create(APIService.class);
 
-    public static void getImagesFromNet(String query, int page, Observer<ImageRespond> observer) {
-
-        service.getImageRespond(query, page, "ajax", "result")
+    public static rx.Observable<Image[]> getImagesFromNet(String query, int page){
+        return service.getImageRespond(query, page, "ajax", "result")
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())  //事件消费在主线程
-                .doOnNext(new Action1<ImageRespond>() {
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<ImageRespond, Image[]>() {
                     @Override
-                    public void call(ImageRespond imageRespond) {
-                          //要写在主线程
+                    public Image[] call(ImageRespond imageRespond) {
+                        return imageRespond.getItems();
                     }
-                })
-                .subscribe(observer);
+                });
     }
 
 }

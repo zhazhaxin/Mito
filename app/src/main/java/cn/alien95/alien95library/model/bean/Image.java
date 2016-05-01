@@ -8,6 +8,16 @@ public class Image {
     private String thumbUrl;
     private String smallThumbUrl;
     private String pic_url;
+    private int width;
+    private int height;
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
 
     public String getThumbUrl() {
         return thumbUrl;

@@ -22,10 +22,10 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:23.2.0'
+    compile 'com.android.support:appcompat-v7:24.0.0-alpha1'
 
-    compile 'cn.alien95:refreshrecyclerview:0.1.5'
-    compile 'cn.alien95:cellview:0.1.5'
+    compile 'cn.alien95:refreshrecyclerview:0.1.6-beta3'
+    compile 'cn.alien95:cellview:0.1.6'
 
     compile 'com.squareup.retrofit2:retrofit:2.0.0-beta4'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0-beta4'
