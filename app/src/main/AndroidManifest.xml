@@ -27,7 +27,7 @@
                 android:resource="@xml/searchable" />
         </activity>
 
-        <activity android:name="alien95.cn.cellview.ui.LookImageActivity" />
+        <activity android:name="cn.lemon.multi.ui.ViewImageActivity" />
 
     </application>
 

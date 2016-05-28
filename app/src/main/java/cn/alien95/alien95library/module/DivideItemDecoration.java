@@ -4,7 +4,8 @@ import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import alien95.cn.util.Utils;
+import cn.alien95.util.Utils;
+
 
 /**
  * Created by linlongxin on 2016/5/1.

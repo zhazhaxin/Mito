@@ -34,7 +34,7 @@ public class ImageModel {
     private static APIService service = retrofit.create(APIService.class);
 
     public static rx.Observable<Image[]> getImagesFromNet(String query, int page){
-        return service.getImageRespond(query, page, "ajax", "result")
+        return service.getImageRespond(query, page * 24, "ajax", "result")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<ImageRespond, Image[]>() {

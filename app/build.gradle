@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion "23.0.3"
 
     defaultConfig {
         applicationId "cn.alien95.alien95library"
@@ -24,8 +24,10 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:24.0.0-alpha1'
 
-    compile 'cn.alien95:refreshrecyclerview:0.1.6-beta3'
-    compile 'cn.alien95:cellview:0.1.6'
+    compile 'cn.alien95:util:1.0.9'
+    compile 'cn.alien95:resthttp:1.0.2'
+    compile 'cn.alien95:refreshrecyclerview:0.1.6'
+    compile 'cn.lemon:multiview:0.1.6-beta1'
 
     compile 'com.squareup.retrofit2:retrofit:2.0.0-beta4'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0-beta4'
@@ -34,5 +36,7 @@ dependencies {
     compile 'io.reactivex:rxandroid:1.1.0'
     compile 'io.reactivex:rxjava:1.1.1'
 
-    compile 'cn.alien95:util:1.0.5'
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
 }

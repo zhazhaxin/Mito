@@ -14,22 +14,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageView;
-
-import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import alien95.cn.cellview.ui.LookImageActivity;
-import alien95.cn.util.Utils;
 import cn.alien95.alien95library.R;
 import cn.alien95.alien95library.model.ImageModel;
 import cn.alien95.alien95library.model.bean.Image;
+import cn.alien95.resthttp.view.HttpImageView;
+import cn.alien95.util.Utils;
 import cn.alien95.view.RefreshRecyclerView;
 import cn.alien95.view.adapter.BaseViewHolder;
 import cn.alien95.view.adapter.RecyclerAdapter;
 import cn.alien95.view.callback.Action;
+import cn.lemon.multi.ui.ViewImageActivity;
 import rx.functions.Action1;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private RefreshRecyclerView refreshRecyclerView;
     private MyAdapter adapter;
-    private List<Image> data = new ArrayList<>();
     private ArrayList<String> picUrlData = new ArrayList<>();
     private Intent intent;
     private String searchWord = "风景";
@@ -58,14 +54,13 @@ public class MainActivity extends AppCompatActivity {
         adapter = new MyAdapter(this);
         refreshRecyclerView.setAdapter(adapter);
 
-        intent = new Intent(MainActivity.this, LookImageActivity.class);
+        intent = new Intent(MainActivity.this, ViewImageActivity.class);
 
-        getData("风景", 0, false);
-
+        getData(searchWord, 0);
         refreshRecyclerView.refresh(new Action() {
             @Override
             public void onAction() {
-                getData(searchWord, 0, true);
+                getData(searchWord, 0);
                 refreshRecyclerView.dismissRefresh();
             }
         });
@@ -73,31 +68,28 @@ public class MainActivity extends AppCompatActivity {
         refreshRecyclerView.loadMore(new Action() {
             @Override
             public void onAction() {
-                getData(searchWord, page, false);
+                getData(searchWord, page);
             }
         });
 
-
     }
 
+    public void getData(final String searchWord, final int pagerNum) {
 
-    public void getData(final String searchWord, final int pagerNum, final boolean isRefresh) {
-
+        Utils.Log("pager : " + pagerNum);
         ImageModel.getImagesFromNet(searchWord, pagerNum)
                 .subscribe(new Action1<Image[]>() {
                     @Override
                     public void call(Image[] images) {
-                        if (isRefresh) {
-                            data.clear();
+                        if (pagerNum == 0) {
                             adapter.clear();
                             picUrlData.clear();
-                            page = 0;
+                            page = 1;
                         } else {
                             page++;
                         }
                         for (Image image : images) {
                             picUrlData.add(image.getPic_url());
-                            data.add(image);
                         }
                         adapter.addAll(images);
                     }
@@ -119,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 closeInputMethod();
-                getData(searchWord = query, 1, true);
+                getData(searchWord = query, 0);
                 return true;
             }
 
@@ -151,11 +143,11 @@ public class MainActivity extends AppCompatActivity {
         class MyViewHolder extends BaseViewHolder<Image> {
 
             private int width = Utils.getScreenWidth() / 2;
-            private ImageView imageView;
+            private HttpImageView imageView;
 
             public MyViewHolder(ViewGroup parent, int layoutId) {
                 super(parent, layoutId);
-                imageView = (ImageView) itemView.findViewById(R.id.image);
+                imageView = (HttpImageView) itemView.findViewById(R.id.image);
             }
 
             @Override
@@ -163,19 +155,13 @@ public class MainActivity extends AppCompatActivity {
                 super.setData(image);
 
                 imageView.setLayoutParams(new StaggeredGridLayoutManager.LayoutParams(width, ((int) (float) image.getHeight() * width / image.getWidth())));
-
-                Glide.with(MainActivity.this)
-                        .load(image.getThumbUrl())
-                        .error(R.drawable.holder)
-                        .centerCrop()
-                        .into(imageView);
-                imageView.invalidate();
-
+                imageView.setLoadImageId(R.drawable.holder);
+                imageView.setImageUrl(image.getThumbUrl());
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        intent.putExtra(LookImageActivity.IMAGE_NUM, data.indexOf(image));
-                        intent.putExtra(LookImageActivity.IMAGES_DATA_LIST, picUrlData);
+                        intent.putExtra(ViewImageActivity.IMAGE_NUM, getLayoutPosition());
+                        intent.putExtra(ViewImageActivity.IMAGES_DATA_LIST, picUrlData);
                         startActivity(intent);
                     }
                 });
